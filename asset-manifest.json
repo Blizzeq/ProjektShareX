@@ -1,0 +1,27 @@
+{
+  "files": {
+    "main.css": "/ProjektShareX/static/css/main.2c4761b6.css",
+    "main.js": "/ProjektShareX/static/js/main.da6a6291.js",
+    "static/js/787.67f3740b.chunk.js": "/ProjektShareX/static/js/787.67f3740b.chunk.js",
+    "static/media/Inter-Bold.ttf": "/ProjektShareX/static/media/Inter-Bold.88fa7ae373b07b41ecce.ttf",
+    "static/media/Inter-SemiBold.ttf": "/ProjektShareX/static/media/Inter-SemiBold.4d56bb21f2399db8ad48.ttf",
+    "static/media/Inter-Regular.ttf": "/ProjektShareX/static/media/Inter-Regular.e89cb19905e7db5591b0.ttf",
+    "static/media/Graphic Side.svg": "/ProjektShareX/static/media/Graphic Side.5df209983a7896191a5c79d29f7ae8cb.svg",
+    "static/media/Instagram.svg": "/ProjektShareX/static/media/Instagram.0b93ce17f95166b57658fe69095fe462.svg",
+    "static/media/Gmail.svg": "/ProjektShareX/static/media/Gmail.c6d3a8839218f95b0cc83636caacc0df.svg",
+    "static/media/Linkedin.svg": "/ProjektShareX/static/media/Linkedin.2916a66702d897cb9ef030ecffdbbcbc.svg",
+    "static/media/Facebook.svg": "/ProjektShareX/static/media/Facebook.d421b4911f60a6bc014abe08922dd3a1.svg",
+    "index.html": "/ProjektShareX/index.html",
+    "static/media/Icon.svg": "/ProjektShareX/static/media/Icon.5913f89c057cae4b7a25154ce3f80973.svg",
+    "static/media/Logo.svg": "/ProjektShareX/static/media/Logo.5bafa3123e630a9ef7ec169305d674b6.svg",
+    "static/media/Frame 453.svg": "/ProjektShareX/static/media/Frame 453.e7b40a3e4195cb98943ccc9fcf48dcc0.svg",
+    "static/media/Icon1.svg": "/ProjektShareX/static/media/Icon1.e7b40a3e4195cb98943ccc9fcf48dcc0.svg",
+    "main.2c4761b6.css.map": "/ProjektShareX/static/css/main.2c4761b6.css.map",
+    "main.da6a6291.js.map": "/ProjektShareX/static/js/main.da6a6291.js.map",
+    "787.67f3740b.chunk.js.map": "/ProjektShareX/static/js/787.67f3740b.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.2c4761b6.css",
+    "static/js/main.da6a6291.js"
+  ]
+}
