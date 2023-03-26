@@ -5,7 +5,7 @@
 ![forks](https://img.shields.io/github/forks/BartoszOkon/lab_specjalistyczne_gr4?style=social&label=Forks)
 
 ## ​Live Demo
-https://blizzeq.github.io/sharex/
+https://blizzeq.github.io/ProjektShareX/
 
 ## ​Spis treści
 
