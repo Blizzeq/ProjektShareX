@@ -102,12 +102,25 @@ const Register = () => {
                             <div>
                                 <p className={'text-gray2 mb-2'}>Phone No.</p>
                                 <input
-                                    type="number"
+                                    type="tel"
                                     className={'border border-blue rounded h-8 px-2 w-full'}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     value={formik.values.phoneNo || ''}
                                     name="phoneNo"
+                                    pattern="[0-9]*" // wyrażenie regularne dopasowujące tylko cyfry
+                                    onKeyDown={(e) => {
+                                        const charCode = e.which ? e.which : e.keyCode;
+                                        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                                            e.preventDefault();
+                                        }
+                                    }} // blokowanie wprowadzania innych znaków niż cyfry
+                                    onPaste={(e) => {
+                                        const pasteData = e.clipboardData.getData("text/plain");
+                                        if (/\D/.test(pasteData)) {
+                                            e.preventDefault();
+                                        }
+                                    }} // blokowanie wklejania tekstu zawierającego znaki inne niż cyfry
                                 />
                                 {formik.touched.phoneNo && formik.errors.phoneNo ? (
                                     <div className="error">{formik.errors.phoneNo}</div>
