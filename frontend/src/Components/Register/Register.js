@@ -11,8 +11,10 @@ import {LinkContainer} from "react-router-bootstrap";
 import Typewriter from "typewriter-effect";
 import {useFormik} from "formik";
 import {registerSchema} from "../FormValidation/FormValidation";
+import axios from "axios";
 
 const Register = () => {
+
 
     const formik = useFormik({
         initialValues: {
@@ -26,7 +28,12 @@ const Register = () => {
         },
         validationSchema: registerSchema,
         onSubmit: values => {
-            console.log(values)
+            axios.post('http://localhost:8080/register', values)
+                .then(res => {
+                    console.log(res.data)
+                }).catch(err => {
+                console.log(err)
+            })
         },
     });
 
@@ -163,7 +170,8 @@ const Register = () => {
                                        onBlur={formik.handleBlur}
                                        checked={formik.values.agreeToTerms}
                                 />
-                                <label htmlFor="agreeToTerms" className={'text-gray2'}>I agree with the terms of use</label>
+                                <label htmlFor="agreeToTerms" className={'text-gray2'}>I agree with the terms of
+                                    use</label>
                             </div>
                         </div>
                         <div className={'flex justify-center -mt-5 mb-4'}>
@@ -172,7 +180,8 @@ const Register = () => {
                             ) : null}
                         </div>
                         <div className={'flex justify-center mb-6'}>
-                            <button type={'submit'} className={'bg-blue text-white rounded h-10 w-4/12'}>Sign Up</button>
+                            <button type={'submit'} className={'bg-blue text-white rounded h-10 w-4/12'}>Sign Up
+                            </button>
                         </div>
                     </form>
                     <p className={'flex justify-center mb-4'}>or sign up with other accounts?</p>

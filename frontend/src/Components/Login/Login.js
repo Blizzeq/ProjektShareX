@@ -11,7 +11,7 @@ import {LinkContainer} from 'react-router-bootstrap'
 import Typewriter from 'typewriter-effect';
 import {loginSchema} from "../FormValidation/FormValidation";
 import {useFormik} from "formik";
-
+import axios from "axios";
 
 
 const Login = () => {
@@ -23,7 +23,13 @@ const Login = () => {
         },
         validationSchema: loginSchema,
         onSubmit: values => {
-            console.log(values)
+            axios.post('http://localhost:8080/login', values)
+                .then(res => {
+                    console.log(res.data);
+                })
+                .catch(err => {
+                    console.log(err);
+                })
         },
     });
 
@@ -62,18 +68,19 @@ const Login = () => {
                         {formik.touched.password && formik.errors.password ? (
                             <div className="error">{formik.errors.password}</div>
                         ) : null}
-                    <div className={'flex justify-between mt-4 mb-6'}>
-                        <div className={'flex'}>
-                            <input type="checkbox"/>
-                            <p className={'text-gray2 ml-2'}>Remember me?</p>
+                        <div className={'flex justify-between mt-4 mb-6'}>
+                            <div className={'flex'}>
+                                <input type="checkbox"/>
+                                <p className={'text-gray2 ml-2'}>Remember me?</p>
+                            </div>
+                            <LinkContainer to={'/reset'}>
+                                <a className={'text-blue'}>Forgot Password</a>
+                            </LinkContainer>
                         </div>
-                        <LinkContainer to={'/reset'}>
-                            <a className={'text-blue'}>Forgot Password</a>
-                        </LinkContainer>
-                    </div>
-                    <div className={'flex justify-center mb-4'}>
-                            <button type={'submit'} className={'bg-blue text-white rounded h-10 w-4/12'}>Sign In</button>
-                    </div>
+                        <div className={'flex justify-center mb-4'}>
+                            <button type={'submit'} className={'bg-blue text-white rounded h-10 w-4/12'}>Sign In
+                            </button>
+                        </div>
                     </form>
                     <p className={'flex justify-center mb-4'}>or sign in with other accounts?</p>
                     <div className={'flex justify-center mb-4 gap-2'}>
