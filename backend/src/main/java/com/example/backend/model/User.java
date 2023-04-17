@@ -1,44 +1,39 @@
 package com.example.backend.model;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.annotation.Transient;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor
-@Document(collection = "users")
+@Entity
+@Table(name = "users")
 public class User {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "username", nullable = false, unique = true, length = 100)
     private String username;
     private String password;
     private String email;
-    private String phoneNumber;
-    private LocalDateTime createdAt;
-    private boolean isActive;
-    @DBRef
-    private AvatarFile avatar;
-    @DBRef
-    private Map<Group, Role> groups;
 
-    public User(String username, String password, String email, String phoneNumber, LocalDateTime createdAt, boolean isActive, AvatarFile avatar, Map<Group, Role> groups) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.createdAt = createdAt;
-        this.isActive = isActive;
-        this.avatar = avatar;
-        this.groups = groups;
-    }
+    @Column(name = "create_time", nullable = false)
+    private LocalDateTime createdTime;
+    private boolean isActive;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private Role role;
+
+    @Transient
+    private String token;
 }

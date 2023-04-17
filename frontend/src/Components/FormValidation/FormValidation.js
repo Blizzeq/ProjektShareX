@@ -1,7 +1,8 @@
 import * as yup from 'yup';
 
 const loginSchema = yup.object().shape({
-    email: yup.string().email("Please provide a valid email.").required("Email is required."),
+    // email: yup.string().email("Please provide a valid email.").required("Email is required."),
+    username: yup.string().required(),
     password: yup.string().required("Password is required.")
 });
 
@@ -9,7 +10,7 @@ const registerSchema = yup.object().shape({
     firstName: yup.string().required('First name is required.').matches(/^[A-Za-z]{2,}$/, 'First name must contain only letters and have at least 2 characters.'),
     lastName: yup.string().required('Last name is required.').matches(/^[A-Za-z]{2,}$/, 'Last name must contain only letters and have at least 2 characters.'),
     email: yup.string().email('Please provide a valid email.').required('Email is required.'),
-    phoneNo: yup.string().required('Phone number is required.').matches(/^[0-9]{9}$/, 'Phone number must contain exactly 9 digits.'),
+    username: yup.string().required(),
     password: yup
         .string()
         .required('Password is required.')
