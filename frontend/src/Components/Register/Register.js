@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './Register.css';
 import logo from "../../Assets/Login/Icon1.svg";
 import google from "../../Assets/Login/Gmail.svg";
@@ -14,26 +14,31 @@ import {registerSchema} from "../FormValidation/FormValidation";
 import axios from "axios";
 
 const Register = () => {
-
+    const [errorMessage, setErrorMessage] = useState('');
 
     const formik = useFormik({
         initialValues: {
             firstName: '',
             lastName: '',
             email: '',
-            phoneNo: '',
+            username: '',
             password: '',
             confirmPassword: '',
             agreeToTerms: false,
         },
         validationSchema: registerSchema,
         onSubmit: values => {
-            axios.post('http://localhost:8080/register', values)
+            axios.post('http://localhost:8080/api/authentication/sign-up', values)
                 .then(res => {
-                    console.log(res.data)
-                }).catch(err => {
-                console.log(err)
-            })
+                    console.log(res.data);
+                })
+                .catch(err => {
+                    if (err?.response?.status === 409) {
+                        setErrorMessage('Username or password is not valid.');
+                    } else {
+                        setErrorMessage('Unexpected error occurred.');
+                    }
+                })
         },
     });
 
@@ -107,30 +112,17 @@ const Register = () => {
                                 ) : null}
                             </div>
                             <div>
-                                <p className={'text-gray2 mb-2'}>Phone No.</p>
+                                <p className={'text-gray2 mb-2'}>Username</p>
                                 <input
-                                    type="tel"
+                                    type="text"
                                     className={'border border-blue rounded h-8 px-2 w-full'}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
-                                    value={formik.values.phoneNo || ''}
-                                    name="phoneNo"
-                                    pattern="[0-9]*" // wyrażenie regularne dopasowujące tylko cyfry
-                                    onKeyDown={(e) => {
-                                        const charCode = e.which ? e.which : e.keyCode;
-                                        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-                                            e.preventDefault();
-                                        }
-                                    }} // blokowanie wprowadzania innych znaków niż cyfry
-                                    onPaste={(e) => {
-                                        const pasteData = e.clipboardData.getData("text/plain");
-                                        if (/\D/.test(pasteData)) {
-                                            e.preventDefault();
-                                        }
-                                    }} // blokowanie wklejania tekstu zawierającego znaki inne niż cyfry
+                                    value={formik.values.username}
+                                    name="username"
                                 />
-                                {formik.touched.phoneNo && formik.errors.phoneNo ? (
-                                    <div className="error">{formik.errors.phoneNo}</div>
+                                {formik.touched.username && formik.errors.username ? (
+                                    <div className="error">{formik.errors.username}</div>
                                 ) : null}
                             </div>
                         </div>
@@ -170,8 +162,7 @@ const Register = () => {
                                        onBlur={formik.handleBlur}
                                        checked={formik.values.agreeToTerms}
                                 />
-                                <label htmlFor="agreeToTerms" className={'text-gray2'}>I agree with the terms of
-                                    use</label>
+                                <label htmlFor="agreeToTerms" className={'text-gray2'}>I agree with the terms of use</label>
                             </div>
                         </div>
                         <div className={'flex justify-center -mt-5 mb-4'}>
@@ -180,8 +171,7 @@ const Register = () => {
                             ) : null}
                         </div>
                         <div className={'flex justify-center mb-6'}>
-                            <button type={'submit'} className={'bg-blue text-white rounded h-10 w-4/12'}>Sign Up
-                            </button>
+                            <button type={'submit'} className={'bg-blue text-white rounded h-10 w-4/12'}>Sign Up</button>
                         </div>
                     </form>
                     <p className={'flex justify-center mb-4'}>or sign up with other accounts?</p>

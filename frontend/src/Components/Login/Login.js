@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './Login.css';
 import bg from '../../Assets/Login/Graphic Side.svg';
 import logo from '../../Assets/Login/Icon1.svg';
@@ -15,20 +15,22 @@ import axios from "axios";
 
 
 const Login = () => {
+    const [errorMessage, setErrorMessage] = useState('');
 
     const formik = useFormik({
         initialValues: {
-            email: '',
+            username: '',
             password: ''
         },
         validationSchema: loginSchema,
         onSubmit: values => {
-            axios.post('http://localhost:8080/login', values)
+            axios.post('http://localhost:8080/api/authentication/sign-in', values)
                 .then(res => {
                     console.log(res.data);
                 })
                 .catch(err => {
                     console.log(err);
+                    setErrorMessage('Username or password is not valid.');
                 })
         },
     });
@@ -44,17 +46,17 @@ const Login = () => {
                     <p className={'SemiBold text-3xl flex justify-center mb-4'}>Sign In</p>
                     <p className={'text-gray flex justify-center mb-4'}>Sign in to stay connected.</p>
                     <form onSubmit={formik.handleSubmit}>
-                        <p className={'text-gray2 mb-2'}>Email</p>
+                        <p className={'text-gray2 mb-2'}>Username</p>
                         <input
                             type="text"
                             className={'border border-blue rounded h-8 px-2 w-full'}
-                            name="email"
+                            name="username"
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            value={formik.values.email}
+                            value={formik.values.username}
                         />
-                        {formik.touched.email && formik.errors.email ? (
-                            <div className="error">{formik.errors.email}</div>
+                        {formik.touched.username && formik.errors.username ? (
+                            <div className="error">{formik.errors.username}</div>
                         ) : null}
                         <p className={'text-gray2 mb-2 mt-4'}>Password</p>
                         <input
@@ -68,19 +70,18 @@ const Login = () => {
                         {formik.touched.password && formik.errors.password ? (
                             <div className="error">{formik.errors.password}</div>
                         ) : null}
-                        <div className={'flex justify-between mt-4 mb-6'}>
-                            <div className={'flex'}>
-                                <input type="checkbox"/>
-                                <p className={'text-gray2 ml-2'}>Remember me?</p>
-                            </div>
-                            <LinkContainer to={'/reset'}>
-                                <a className={'text-blue'}>Forgot Password</a>
-                            </LinkContainer>
+                    <div className={'flex justify-between mt-4 mb-6'}>
+                        <div className={'flex'}>
+                            <input type="checkbox"/>
+                            <p className={'text-gray2 ml-2'}>Remember me?</p>
                         </div>
-                        <div className={'flex justify-center mb-4'}>
-                            <button type={'submit'} className={'bg-blue text-white rounded h-10 w-4/12'}>Sign In
-                            </button>
-                        </div>
+                        <LinkContainer to={'/reset'}>
+                            <a className={'text-blue'}>Forgot Password</a>
+                        </LinkContainer>
+                    </div>
+                    <div className={'flex justify-center mb-4'}>
+                            <button type={'submit'} className={'bg-blue text-white rounded h-10 w-4/12'}>Sign In</button>
+                    </div>
                     </form>
                     <p className={'flex justify-center mb-4'}>or sign in with other accounts?</p>
                     <div className={'flex justify-center mb-4 gap-2'}>
