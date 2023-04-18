@@ -10,13 +10,16 @@ import logo2 from '../../Assets/Login/Icon.svg';
 import {LinkContainer} from 'react-router-bootstrap'
 import Typewriter from 'typewriter-effect';
 import {loginSchema} from "../FormValidation/FormValidation";
-import {useFormik} from "formik";
+import {replace, useFormik} from "formik";
 import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 
 
 const Login = () => {
     const [errorMessage, setErrorMessage] = useState('');
+
+    const navigate = useNavigate();
 
     const formik = useFormik({
         initialValues: {
@@ -28,6 +31,7 @@ const Login = () => {
             axios.post('http://localhost:8080/api/authentication/sign-in', values)
                 .then(res => {
                     console.log(res.data);
+                    navigate("/home", {replace: true});
                 })
                 .catch(err => {
                     console.log(err);
@@ -80,6 +84,9 @@ const Login = () => {
                             <a className={'text-blue'}>Forgot Password</a>
                         </LinkContainer>
                     </div>
+                    <div className={'mb-3 -mt-3'}>
+                        {errorMessage && <div className="error">{errorMessage}</div>}
+                    </div>
                     <div className={'flex justify-center mb-4'}>
                             <button type={'submit'} className={'bg-blue text-white rounded h-10 w-4/12'}>Sign In</button>
                     </div>
@@ -120,7 +127,7 @@ const Login = () => {
                     <p>Share your
                         <Typewriter
                             options={{
-                                strings: ['projects', 'files', 'photos', 'videos', 'music', 'links', 'notes', 'ideas', 'thoughts', 'stories'],
+                                strings: ['projects','ideas', 'tasks'],
                                 autoStart: true,
                                 loop: true,
                             }}

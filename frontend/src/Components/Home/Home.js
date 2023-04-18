@@ -9,6 +9,9 @@ import filter from '../../Assets/Home/Filter.svg';
 import arrowright from '../../Assets/Home/Arrow-right.svg';
 import filtericon from '../../Assets/Home/Filter-Icon.svg';
 import arrowdown from '../../Assets/Home/arrow-down.svg';
+import send from '../../Assets/Home/Send.svg';
+import threedots from '../../Assets/Home/tripple-dots.svg';
+import plus from '../../Assets/Home/Plus.svg';
 
 const Home = () => {
     return (
@@ -79,13 +82,40 @@ const Home = () => {
                             <p className={'text-white Regular text-2xl text-shadow'}>Welcome to Share X</p>
                         </div>
                     </div>
-                    <div className={'flex mx-20 px-6 py-6 rounded relative -top-10 bg-white ters'}>
+                    <div className={'flex mx-20 px-6 py-6 rounded relative -top-10 bg-white shadow justify-between'}>
                         <div className={'flex'}>
-                            <img src={filtericon} alt={'filtericon'} className={'filter-icon'}/>
-                            <p className={'text-gray2 Regular'}>Filter by task name...</p>
+                            <div className={'flex'}>
+                                <img src={filtericon} alt={'filtericon'} className={'filter-icon'}/>
+                                <p className={'text-gray2 Regular'}>Filter by task name...</p>
+                            </div>
                         </div>
-                        <div className={'flex'}>
-                            <p>Sort By:</p>
+                        <div className={'flex gap-3 text-gray2'}>
+                            <div className={'flex'}>
+                                <p>Sort By :</p>
+                                <img src={arrowdown} alt={'arrowdown'} className={'arrow-down'}/>
+                            </div>
+                            <div className={'flex'}>
+                                <div className={'flex gap-1'}>
+                                    <p>Group By :</p>
+                                    <img src={arrowdown} alt={'arrowdown'} className={'arrow-down'}/>
+                                </div>
+                                <p>Status</p>
+                            </div>
+                            <div className={'flex'}>
+                                <img src={send} alt={'send'} className={'send-icon'}/>
+                                <p>Sort By :</p>
+                                <img src={arrowdown} alt={'arrowdown'} className={'arrow-down'}/>
+                            </div>
+                        </div>
+                    </div>
+                    <div className={'flex flex-col gap-10'}>
+                        <div className={'flex justify-between mx-2 w-96 px-6 py-6 rounded shadow task'}>
+                            <p>Sprint</p>
+                            <img src={threedots} alt={'threedots'}/>
+                        </div>
+                        <div className={'flex justify-between mx-2 w-96 px-6 py-6 rounded task-dot text-gray'}>
+                            <p>Sprint</p>
+                            <img src={plus} alt={'plus'}/>
                         </div>
                     </div>
                 </div>

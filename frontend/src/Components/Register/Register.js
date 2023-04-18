@@ -12,9 +12,13 @@ import Typewriter from "typewriter-effect";
 import {useFormik} from "formik";
 import {registerSchema} from "../FormValidation/FormValidation";
 import axios from "axios";
+import {useNavigate} from "react-router-dom";
+
 
 const Register = () => {
     const [errorMessage, setErrorMessage] = useState('');
+
+    const navigate = useNavigate();
 
     const formik = useFormik({
         initialValues: {
@@ -31,10 +35,11 @@ const Register = () => {
             axios.post('http://localhost:8080/api/authentication/sign-up', values)
                 .then(res => {
                     console.log(res.data);
+                    navigate("/login", {replace: true});
                 })
                 .catch(err => {
                     if (err?.response?.status === 409) {
-                        setErrorMessage('Username or password is not valid.');
+                        setErrorMessage('Username or email is not valid.');
                     } else {
                         setErrorMessage('Unexpected error occurred.');
                     }
@@ -49,7 +54,7 @@ const Register = () => {
                     <p>Share your
                         <Typewriter
                             options={{
-                                strings: ['projects', 'files', 'photos', 'videos', 'music', 'links', 'notes', 'ideas', 'thoughts', 'stories'],
+                                strings: ['projects','ideas', 'tasks'],
                                 autoStart: true,
                                 loop: true,
                             }}
@@ -173,6 +178,7 @@ const Register = () => {
                         <div className={'flex justify-center mb-6'}>
                             <button type={'submit'} className={'bg-blue text-white rounded h-10 w-4/12'}>Sign Up</button>
                         </div>
+                        {errorMessage && <div className="error flex justify-center mb-2 -mt-3">{errorMessage}</div>}
                     </form>
                     <p className={'flex justify-center mb-4'}>or sign up with other accounts?</p>
                     <div className={'flex justify-center mb-4 gap-2'}>

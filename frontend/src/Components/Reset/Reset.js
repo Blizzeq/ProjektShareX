@@ -3,7 +3,6 @@ import './Reset.css';
 import bg from '../../Assets/Reset/Graphic Side.svg';
 import logo from '../../Assets/Reset/Logo.svg';
 import frame from '../../Assets/Reset/Frame 453.svg';
-import {LinkContainer} from "react-router-bootstrap";
 import Typewriter from "typewriter-effect";
 import {resetPasswordSchema} from "../FormValidation/FormValidation";
 import {useFormik} from "formik";
@@ -57,7 +56,7 @@ const Reset = () => {
                     <p>Share your
                         <Typewriter
                             options={{
-                                strings: ['projects', 'files', 'photos', 'videos', 'music', 'links', 'notes', 'ideas', 'thoughts', 'stories'],
+                                strings: ['projects','ideas', 'tasks'],
                                 autoStart: true,
                                 loop: true,
                             }}
