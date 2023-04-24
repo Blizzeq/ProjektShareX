@@ -84,7 +84,7 @@ const Home = () => {
                                 </div>
                                 <div className={'text-base w-9/12'}>
                                     <input type="text" placeholder={'John Doe'} className={'input-profile px-2 py-2 w-full'}/>
-                                    <p className={'px-2 py-2'}>Edit username</p>
+                                    <p className={'px-2 py-2'}>Edit Username</p>
                                 </div>
                             </div>
                             <hr></hr>
@@ -104,7 +104,7 @@ const Home = () => {
                                 </div>
                                 <div className={'text-base w-9/12'}>
                                     <input type="text" placeholder={'John Doe'} className={'input-profile px-2 py-2 w-full'}/>
-                                    <p className={'px-2 py-2'}>Edit Lirst name</p>
+                                    <p className={'px-2 py-2'}>Edit Last name</p>
                                 </div>
                             </div>
                             <hr></hr>
