@@ -1,5 +1,5 @@
 import React from 'react';
-import './Home.css';
+import './Profile.css';
 import logo from '../../Assets/Home/Logo.svg';
 import notify from '../../Assets/Home/Notification.svg';
 import message from '../../Assets/Home/Message.svg';
@@ -76,46 +76,51 @@ const Home = () => {
                 </div>
                 <div className={'w-full'}>
                     <hr></hr>
-                    <div className={'bg-home'}>
-                        <div className={'flex mx-12 flex-col gap-3 py-12'}>
-                            <p className={'text-white Bold text-4xl text-shadow'}>Hello John Doe!</p>
-                            <p className={'text-white Regular text-2xl text-shadow'}>Welcome to Share X</p>
-                        </div>
-                    </div>
-                    <div className={'flex mx-20 px-6 py-6 rounded relative -top-10 bg-white shadow justify-between'}>
-                        <div className={'flex'}>
-                            <div className={'flex'}>
-                                <img src={filtericon} alt={'filtericon'} className={'filter-icon'}/>
-                                <p className={'text-gray2 Regular'}>Filter by task name...</p>
-                            </div>
-                        </div>
-                        <div className={'flex gap-3 text-gray2 test'}>
-                            <div className={'flex'}>
-                                <p>Sort by :</p>
-                                <img src={arrowdown} alt={'arrowdown'} className={'arrow-down'}/>
-                            </div>
-                            <div className={'flex'}>
-                                <div className={'flex'}>
-                                    <p>Group by :</p>
-                                    <img src={arrowdown} alt={'arrowdown'} className={'arrow-down'}/>
+                    <div className={'flex h-full items-center justify-center profile-content'}>
+                        <div className={'profile'}>
+                            <div className={'flex py-4 px-4'}>
+                                <div className={'text-xl w-3/12'}>
+                                    <p className={'px-2 py-2'}>Username</p>
                                 </div>
-                                <p>Status</p>
+                                <div className={'text-base w-9/12'}>
+                                    <input type="text" placeholder={'John Doe'} className={'input-profile px-2 py-2 w-full'}/>
+                                    <p className={'px-2 py-2'}>Edit username</p>
+                                </div>
                             </div>
-                            <div className={'flex'}>
-                                <img src={send} alt={'send'} className={'send-icon'}/>
-                                <p>Sort by :</p>
-                                <img src={arrowdown} alt={'arrowdown'} className={'arrow-down'}/>
+                            <hr></hr>
+                            <div className={'flex py-4 px-4'}>
+                                <div className={'text-xl w-3/12'}>
+                                    <p className={'px-2 py-2'}>First name</p>
+                                </div>
+                                <div className={'text-base w-9/12'}>
+                                    <input type="text" placeholder={'John Doe'} className={'input-profile px-2 py-2 w-full'}/>
+                                    <p className={'px-2 py-2'}>Edit First name</p>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div className={'flex flex-col gap-10'}>
-                        <div className={'flex justify-between mx-2 w-96 px-6 py-6 rounded shadow task'}>
-                            <p>Sprint</p>
-                            <img src={threedots} alt={'threedots'}/>
-                        </div>
-                        <div className={'flex justify-between mx-2 w-96 px-6 py-6 rounded task-dot text-gray'}>
-                            <p>Sprint</p>
-                            <img src={plus} alt={'plus'}/>
+                            <hr></hr>
+                            <div className={'flex py-4 px-4'}>
+                                <div className={'text-xl w-3/12'}>
+                                    <p className={'px-2 py-2'}>Last name</p>
+                                </div>
+                                <div className={'text-base w-9/12'}>
+                                    <input type="text" placeholder={'John Doe'} className={'input-profile px-2 py-2 w-full'}/>
+                                    <p className={'px-2 py-2'}>Edit Lirst name</p>
+                                </div>
+                            </div>
+                            <hr></hr>
+                            <div className={'flex py-4 px-4'}>
+                                <div className={'text-xl w-3/12'}>
+                                    <p className={'px-2 py-2'}>Password</p>
+                                </div>
+                                <div className={'text-base w-9/12'}>
+                                    <input type="password" placeholder={'Password'} className={'input-profile px-2 py-2 w-full'}/>
+                                    <p className={'px-2 py-2'}>Edit Password</p>
+                                </div>
+                            </div>
+                            <hr></hr>
+                            <div className={'flex justify-end'}>
+                                <a href="#" className={'text-white py-2 px-4 rounded mx-4 my-4 border bg-blue '}>Save</a>
+                            </div>
                         </div>
                     </div>
                 </div>
