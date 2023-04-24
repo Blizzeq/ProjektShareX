@@ -49,8 +49,8 @@ const Register = () => {
 
     return (
         <div className={'register Regular'}>
-            <div className={'flex justify-center items-center h-screen w-full'}>
-                <div className={'w-max text-5xl text-shadow text-white z-10'}>
+            <div className={'flex justify-center items-center h-screen w-full left-n'}>
+                <div className={'w-max text-5xl text-shadow text-white z-10 left-n'}>
                     <p>Share your
                         <Typewriter
                             options={{
@@ -211,10 +211,10 @@ const Register = () => {
                     </div>
                 </div>
             </div>
-            <div>
+            <div className={'left-n'}>
                 <img src={graphic} alt={'graphic'} className={'absolute h-screen w-1/2 object-cover top-0'}/>
             </div>
-            <div>
+            <div className={'left-n'}>
                 <img src={logo2} alt={'logo'} className={'absolute -top-20 right-0'}/>
             </div>
         </div>

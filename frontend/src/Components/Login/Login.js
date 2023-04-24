@@ -122,7 +122,7 @@ const Login = () => {
                     </div>
                 </div>
             </div>
-            <div className={'flex justify-center items-center h-screen w-full'}>
+            <div className={'flex justify-center items-center h-screen w-full right'}>
                 <div className={'w-max text-5xl text-shadow text-white z-10'}>
                     <p>Share your
                         <Typewriter
@@ -136,10 +136,10 @@ const Login = () => {
                 </div>
             </div>
             <div>
-                <img src={bg} alt={'bg'} className={'absolute top-0 left-1/2 h-screen w-1/2 object-cover'}/>
+                <img src={bg} alt={'bg'} className={'absolute top-0 left-1/2 h-screen w-1/2 object-cover right'}/>
             </div>
             <div>
-                <img src={logo2} alt={'logo'} className={'absolute -top-10 -left-10'}/>
+                <img src={logo2} alt={'logo'} className={'absolute -top-10 -left-10 right'}/>
             </div>
         </div>
     );

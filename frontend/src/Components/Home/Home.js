@@ -15,7 +15,7 @@ import plus from '../../Assets/Home/Plus.svg';
 
 const Home = () => {
     return (
-        <div className={'home Regular'}>
+        <div className={'home Regular right'}>
             <div className={'flex justify-between mx-6 h-20'}>
                 <div className={'flex gap-12'}>
                     <div className={'flex gap-3 items-center'}>

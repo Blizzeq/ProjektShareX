@@ -107,3 +107,40 @@
 .task-dot{
     border: 2px dashed #E9ECEF;
 }
+
+@media (max-width: 1024px) {
+    html {
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 768px) {
+    html {
+        font-size: 8px;
+    }
+}
+
+@media (max-width: 511px) {
+    html {
+        font-size: 11px;
+    }
+
+    .reset{
+        grid-template-columns: 1fr;
+    }
+
+    .right{
+        display: none;
+        position: absolute;
+    }
+}
+
+@media (max-width: 330px) {
+    html {
+        font-size: 9px;
+    }
+
+    .right{
+        display: none;
+    }
+}
