@@ -1,0 +1,33 @@
+package com.example.backend.controller;
+
+import com.example.backend.model.Project;
+import com.example.backend.security.UserPrinciple;
+import com.example.backend.service.ProjectService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("api/project")
+public class ProjectController {
+
+    private final ProjectService projectService;
+
+    @Autowired
+    public ProjectController(ProjectService projectService) {
+        this.projectService = projectService;
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getAllProjectsOfUser(@AuthenticationPrincipal UserPrinciple userPrinciple) {
+        return ResponseEntity.ok(projectService.findProjectsOfUser(userPrinciple.getId()));
+    }
+
+    @PostMapping("create")
+    public ResponseEntity<?> createProject(@RequestBody Project project) {
+        return new ResponseEntity<>(projectService.saveProject(project), HttpStatus.CREATED);
+    }
+
+}

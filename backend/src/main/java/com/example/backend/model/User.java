@@ -21,9 +21,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "username", nullable = false, unique = true, length = 100)
+    @Column(name = "username", nullable = false, length = 100)
     private String username;
     private String password;
+    private String firstName;
+    private String lastName;
     private String email;
 
     @Column(name = "create_time", nullable = false)
@@ -33,6 +35,10 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private Role role;
+
+    @ManyToMany
+    @JoinTable(name = "users_projects", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "project_id"))
+    private Set<Project> projects = new HashSet<>();
 
     @Transient
     private String token;

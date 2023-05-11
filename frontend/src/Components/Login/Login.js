@@ -13,13 +13,18 @@ import {loginSchema} from "../FormValidation/FormValidation";
 import {replace, useFormik} from "formik";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {setCurrentUser} from "../../store/actions/user";
 
 
 
 const Login = () => {
     const [errorMessage, setErrorMessage] = useState('');
 
+    const currentUser = useSelector(state => state.user);
+
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const formik = useFormik({
         initialValues: {
@@ -29,9 +34,10 @@ const Login = () => {
         validationSchema: loginSchema,
         onSubmit: values => {
             axios.post('http://localhost:8080/api/authentication/sign-in', values)
-                .then(res => {
-                    console.log(res.data);
-                    navigate("/home", {replace: true});
+                .then(response => {
+                    console.log(response.data);
+                    dispatch(setCurrentUser(response.data));
+                    navigate("/home");
                 })
                 .catch(err => {
                     console.log(err);

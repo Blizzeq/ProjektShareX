@@ -35,7 +35,7 @@ const Register = () => {
             axios.post('http://localhost:8080/api/authentication/sign-up', values)
                 .then(res => {
                     console.log(res.data);
-                    navigate("/login", {replace: true});
+                    navigate("/", {replace: true});
                 })
                 .catch(err => {
                     if (err?.response?.status === 409) {

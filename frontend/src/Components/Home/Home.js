@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import './Home.css';
 import logo from '../../Assets/Home/Logo.svg';
 import notify from '../../Assets/Home/Notification.svg';
@@ -12,116 +12,114 @@ import arrowdown from '../../Assets/Home/arrow-down.svg';
 import send from '../../Assets/Home/Send.svg';
 import threedots from '../../Assets/Home/tripple-dots.svg';
 import plus from '../../Assets/Home/Plus.svg';
+import {LinkContainer} from "react-router-bootstrap";
+import {useSelector} from "react-redux";
+import Modal from "../../Modal/Modal";
+import Project from "../../models/project";
+import ProjectService from "../../services/project.service";
 
 const Home = () => {
-    return (
-        <div className={'home Regular right'}>
-            <div className={'flex justify-between mx-6 h-20'}>
-                <div className={'flex gap-12'}>
-                    <div className={'flex gap-3 items-center'}>
-                        <img src={logo} alt={'logo'} className={'logo-home'}/>
-                        <p className={'SemiBold text-3xl'}>Share X</p>
-                    </div>
-                    <div className={'flex items-center'}>
-                        <input type="text" placeholder={'Search...'} className={'input-home'}/>
-                        <span className={'input-logo'}></span>
-                    </div>
+    const currentUser = useSelector(state => state.user);
+
+    const [projectList, setProjectList] = useState([]);
+
+    const [isMenuVisible, setMenuVisible] = useState(false);
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    function handleProfileClick() {
+        setMenuVisible(!isMenuVisible);
+    }
+
+    const [activeIndex, setActiveIndex] = useState(0);
+
+    const [items, setItems] = useState([{label: 'Home', icon: send},
+        {label: 'Kanban', icon: dashboard},
+        {label: 'Settings', icon: filter},]);
+
+    const handleClick = (index) => {
+        setActiveIndex(index);
+    };
+
+    const handleAddProjectClick = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleModalSubmit = (newProject) => {
+        setItems([...items, newProject]);
+    };
+
+    const handleModalClose = () => {
+        setIsModalOpen(false);
+    };
+
+    useEffect(() => {
+        ProjectService.getAllProjects().then((response) => {
+            console.log(response.data)
+            setProjectList(response.data);
+        });
+    }, []);
+
+
+
+    return (<div className={'home Regular right'}>
+        <div className={'flex justify-between mx-6 h-20'}>
+            <div className={'flex gap-12'}>
+                <div className={'flex gap-3 items-center'}>
+                    <img src={logo} alt={'logo'} className={'logo-home'}/>
+                    <p className={'SemiBold text-3xl'}>Share X</p>
                 </div>
-                <div className={'flex gap-5 justify-evenly user-home items-center'}>
-                    <img src={notify} alt={'notify'}/>
-                    <img src={message} alt={'message'}/>
-                    <img src={profilelogo} alt={'profilelogo'} id={'profile-logo'}/>
-                    <div className={''}>
-                        <p className={'text-darkblue'}>John Doe</p>
-                        <p className={'text-gray2'}>test@mail.com</p>
-                    </div>
+                <div className={'flex items-center'}>
+                    <input type="text" placeholder={'Search...'} className={'input-home'}/>
+                    <span className={'input-logo'}></span>
                 </div>
             </div>
-            <div className={'flex'}>
-                <div className={'w-64'}>
-                    <hr></hr>
-                    <div className={'flex items-center mx-4 mt-6'}>
-                        <p className={'px-4 text-gray'}>Home</p>
-                    </div>
-                    <div className={'flex items-center mx-4 bg-blue rounded px-6 py-2 mt-4 gap-2'}>
-                        <img src={dashboard} alt={'dashboard'}/>
-                        <p className={'text-white'}>Dashboard</p>
-                    </div>
-                    <div className={'flex items-center mx-4 rounded px-6 py-2 mt-4 gap-4'}>
-                        <img src={filter} alt={'filter'}/>
-                        <p className={'text-gray'}>Settings</p>
-                        <img src={arrowright} alt={'arrowright'}/>
-                    </div>
-                    <hr></hr>
-                    <div className={'flex items-center mx-4 rounded px-6 py-2 mt-4 gap-4'}>
-                        <img src={filter} alt={'filter'}/>
-                        <p className={'text-gray'}>Settings</p>
-                        <img src={arrowright} alt={'arrowright'}/>
-                    </div>
-                    <div className={'flex items-center mx-4 rounded px-6 py-2 mt-4 gap-4'}>
-                        <img src={filter} alt={'filter'}/>
-                        <p className={'text-gray'}>Settings</p>
-                        <img src={arrowright} alt={'arrowright'}/>
-                    </div>
-                    <div className={'flex items-center mx-4 rounded px-6 py-2 mt-4 gap-4'}>
-                        <img src={filter} alt={'filter'}/>
-                        <p className={'text-gray'}>Settings</p>
-                        <img src={arrowright} alt={'arrowright'}/>
-                    </div>
-                    <div className={'flex items-center mx-4 rounded px-6 py-2 mt-4 gap-4'}>
-                        <img src={filter} alt={'filter'}/>
-                        <p className={'text-gray'}>Settings</p>
-                        <img src={arrowright} alt={'arrowright'}/>
-                    </div>
+            <div className={'flex gap-5 justify-evenly user-home items-center relative'}>
+                <img src={profilelogo} alt={'profilelogo'} id={'profile-logo'} onClick={handleProfileClick}/>
+                <div className={''}>
+                    <p className={'text-darkblue'}>{currentUser?.firstName + ' ' + currentUser?.lastName}</p>
+                    <p className={'text-gray2'}>{currentUser?.email}</p>
                 </div>
-                <div className={'w-full'}>
-                    <hr></hr>
-                    <div className={'bg-home'}>
-                        <div className={'flex mx-12 flex-col gap-3 py-12'}>
-                            <p className={'text-white Bold text-4xl text-shadow'}>Hello John Doe!</p>
-                            <p className={'text-white Regular text-2xl text-shadow'}>Welcome to Share X</p>
-                        </div>
+                {isMenuVisible && (<div className="menu menu--visible">
+                    <div>
+                        <LinkContainer to={'/profile'}>
+                            <li>Profil użytkownika</li>
+                        </LinkContainer>
+                        <LinkContainer to={'/'}>
+                            <li>Wyloguj</li>
+                        </LinkContainer>
                     </div>
-                    <div className={'flex mx-20 px-6 py-6 rounded relative -top-10 bg-white shadow justify-between'}>
-                        <div className={'flex'}>
-                            <div className={'flex'}>
-                                <img src={filtericon} alt={'filtericon'} className={'filter-icon'}/>
-                                <p className={'text-gray2 Regular'}>Filter by task name...</p>
-                            </div>
-                        </div>
-                        <div className={'flex gap-3 text-gray2 test'}>
-                            <div className={'flex'}>
-                                <p>Sort by :</p>
-                                <img src={arrowdown} alt={'arrowdown'} className={'arrow-down'}/>
-                            </div>
-                            <div className={'flex'}>
-                                <div className={'flex'}>
-                                    <p>Group by :</p>
-                                    <img src={arrowdown} alt={'arrowdown'} className={'arrow-down'}/>
-                                </div>
-                                <p>Status</p>
-                            </div>
-                            <div className={'flex'}>
-                                <img src={send} alt={'send'} className={'send-icon'}/>
-                                <p>Sort by :</p>
-                                <img src={arrowdown} alt={'arrowdown'} className={'arrow-down'}/>
-                            </div>
-                        </div>
-                    </div>
-                    <div className={'flex flex-col gap-10'}>
-                        <div className={'flex justify-between mx-2 w-96 px-6 py-6 rounded shadow task'}>
-                            <p>Sprint</p>
-                            <img src={threedots} alt={'threedots'}/>
-                        </div>
-                        <div className={'flex justify-between mx-2 w-96 px-6 py-6 rounded task-dot text-gray'}>
-                            <p>Sprint</p>
-                            <img src={plus} alt={'plus'}/>
-                        </div>
-                    </div>
-                </div>
+                </div>)}
             </div>
         </div>
-    );
+        <hr></hr>
+        <div className={'flex w-full'}>
+            <div className={'flex flex-col w-2/12 items-center gap-5 pt-8 kanban-menu h-screen'}>
+                {projectList.map((item, index) => (
+                    <div
+                        key={item.id}
+                        className={index === activeIndex ? 'bg-blue flex gap-4 px-4 py-2 rounded text-white' : 'bg-gray-300 flex gap-4 px-4 py-2 rounded'}
+                        onClick={() => handleClick(index)}
+                    >
+                        <p>{item.name}</p>
+                    </div>
+                ))}
+                <div
+                    className={'bg-gray-300 flex gap-4 px-4 py-2 rounded cursor-pointer'}
+                    onClick={handleAddProjectClick}
+                >
+                    <img src={dashboard} alt={'Add project'} className={'w-6'} />
+                    <p>Add project</p>
+                </div>
+            </div>
+            <div className={'flex w-10/12 pt-8'}>
+                <div className={'flex justify-center w-full'}>
+                    <p className={'text-3xl'}>{items[activeIndex].name}</p>
+                </div>
+            </div>
+            {isModalOpen && (<Modal isOpen={isModalOpen} onClose={handleModalClose} onSubmit={handleModalSubmit} />)}
+        </div>
+    </div>);
 };
 
 export default Home;

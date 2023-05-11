@@ -4,8 +4,10 @@ import com.example.backend.model.Role;
 import com.example.backend.model.User;
 import com.example.backend.repository.UserRepository;
 import com.example.backend.service.UserService;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -40,5 +42,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
+    }
+
+    @Override
+    public User getLoggedInUser(Authentication authentication) {
+        String loggedInUsername = authentication.getName();
+        Optional<User> optionalUser = userRepository.findByUsername(loggedInUsername);
+        return optionalUser.orElse(null);
     }
 }
