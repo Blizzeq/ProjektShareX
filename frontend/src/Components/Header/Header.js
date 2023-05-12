@@ -3,6 +3,7 @@ import logo from "../../Assets/Home/Logo.svg";
 import profilelogo from "../../Assets/Home/Profile-Icon.svg";
 import {LinkContainer} from "react-router-bootstrap";
 import {useSelector} from "react-redux";
+import './Header.css';
 
 function Header(props) {
 
@@ -33,7 +34,7 @@ function Header(props) {
                     <p className={'text-gray2'}>{currentUser?.email}</p>
                 </div>
                 {isMenuVisible && (<div className="menu menu--visible">
-                    <div>
+                    <div className={'user-menu'}>
                         <LinkContainer to={'/profile'}>
                             <li>Profil użytkownika</li>
                         </LinkContainer>
