@@ -94,10 +94,10 @@ const Home = () => {
                     <hr></hr>
                     <div className={'flex py-4 px-4'}>
                         <div className={'text-xl w-3/12'}>
-                            <p className={'px-2 py-2'}>Password</p>
+                            <p className={'px-2 py-2'}>New Password</p>
                         </div>
                         <div className={'text-base w-9/12'}>
-                            <input type="password" name="password" placeholder={'Password'} className={'input-profile px-2 py-2 w-full'} value={user.password} onChange={(e) => onInputChange(e)}/>
+                            <input type="password" name="password" placeholder={'New Password'} className={'input-profile px-2 py-2 w-full'} value={user.password} onChange={(e) => onInputChange(e)}/>
                         </div>
                     </div>
                     <hr></hr>
