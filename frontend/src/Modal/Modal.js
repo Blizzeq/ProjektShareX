@@ -5,6 +5,7 @@ import send from '../Assets/Home/Send.svg';
 import Project from "../models/project";
 import {useSelector} from "react-redux";
 import ProjectService from "../services/project.service";
+import './Modal.css';
 
 function Modal(props) {
     const currentUser = useSelector(state => state.user);
@@ -47,11 +48,11 @@ function Modal(props) {
             <div className={'bg-white p-8 rounded'}>
                 <h2 className={'text-xl font-bold mb-4'}>Create new project</h2>
                 <form>
-                    <div>
+                    <div className={'project-name-container'}>
                         <label htmlFor="project-name">Project Name</label>
                         <input type="text" id="project-name" name="project-name" onChange={(e) => setProjectName(e.target.value)} />
                     </div>
-                    <div className={'mt-4'}>
+                    <div className={'mt-4 project-name-container'}>
                         <label htmlFor="project-image">Project Image</label>
                         <select id="project-image" name="project-image" onChange={(e) => setProjectImage(e.target.value)}>
                             <option value="dashboard">Dashboard</option>
@@ -60,7 +61,7 @@ function Modal(props) {
                         </select>
                     </div>
                     <div className={'flex justify-end mt-8'}>
-                        <button type="button" className={'text-gray2'} onClick={onClose}>Cancel</button>
+                        <button type="button" className={'text-gray2 bg-gray-300 px-4 py-2 rounded text-darkblue'} onClick={onClose}>Cancel</button>
                         <button type="submit" className={'bg-blue text-white ml-4 px-4 py-2 rounded'} onClick={(e) => handleSubmit(e)}>Create</button>
                     </div>
                 </form>

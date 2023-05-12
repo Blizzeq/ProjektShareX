@@ -17,6 +17,7 @@ import {useSelector} from "react-redux";
 import Modal from "../../Modal/Modal";
 import Project from "../../models/project";
 import ProjectService from "../../services/project.service";
+import Header from "../Header/Header";
 
 const Home = () => {
     const currentUser = useSelector(state => state.user);
@@ -63,35 +64,7 @@ const Home = () => {
 
 
     return (<div className={'home Regular right'}>
-        <div className={'flex justify-between mx-6 h-20'}>
-            <div className={'flex gap-12'}>
-                <div className={'flex gap-3 items-center'}>
-                    <img src={logo} alt={'logo'} className={'logo-home'}/>
-                    <p className={'SemiBold text-3xl'}>Share X</p>
-                </div>
-                <div className={'flex items-center'}>
-                    <input type="text" placeholder={'Search...'} className={'input-home'}/>
-                    <span className={'input-logo'}></span>
-                </div>
-            </div>
-            <div className={'flex gap-5 justify-evenly user-home items-center relative'}>
-                <img src={profilelogo} alt={'profilelogo'} id={'profile-logo'} onClick={handleProfileClick}/>
-                <div className={''}>
-                    <p className={'text-darkblue'}>{currentUser?.firstName + ' ' + currentUser?.lastName}</p>
-                    <p className={'text-gray2'}>{currentUser?.email}</p>
-                </div>
-                {isMenuVisible && (<div className="menu menu--visible">
-                    <div>
-                        <LinkContainer to={'/profile'}>
-                            <li>Profil użytkownika</li>
-                        </LinkContainer>
-                        <LinkContainer to={'/'}>
-                            <li>Wyloguj</li>
-                        </LinkContainer>
-                    </div>
-                </div>)}
-            </div>
-        </div>
+        <Header/>
         <hr></hr>
         <div className={'flex w-full'}>
             <div className={'flex flex-col w-2/12 items-center gap-5 pt-8 kanban-menu h-screen'}>
