@@ -3,6 +3,7 @@ package com.example.backend.controller;
 import com.example.backend.model.Project;
 import com.example.backend.security.UserPrinciple;
 import com.example.backend.service.ProjectService;
+import com.example.backend.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +16,12 @@ public class ProjectController {
 
     private final ProjectService projectService;
 
+    private final TaskService taskService;
+
     @Autowired
-    public ProjectController(ProjectService projectService) {
+    public ProjectController(ProjectService projectService, TaskService taskService) {
         this.projectService = projectService;
+        this.taskService = taskService;
     }
 
     @GetMapping
@@ -28,6 +32,15 @@ public class ProjectController {
     @PostMapping("create")
     public ResponseEntity<?> createProject(@RequestBody Project project) {
         return new ResponseEntity<>(projectService.saveProject(project), HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("{projectId}")
+    public ResponseEntity<?> deleteProject(@PathVariable Long projectId) {
+        taskService.deleteTaskByProjectId(projectId);
+
+        projectService.deleteProjectById(projectId);
+
+        return ResponseEntity.ok().build();
     }
 
 }

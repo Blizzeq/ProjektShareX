@@ -10,4 +10,6 @@ public interface ProjectService {
 
     List<Project> findProjectsOfUser(Long userId);
 
+    void deleteProjectById(Long id);
+
 }

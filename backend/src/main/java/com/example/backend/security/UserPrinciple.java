@@ -20,8 +20,8 @@ public class UserPrinciple implements UserDetails  {
 
     private Long id;
     private String username;
-    private String firstName;
-    private String lastName;
+    //private String firstName;
+    //private String lastName;
     transient private String password;
     transient private User user;
     private Set<GrantedAuthority> authorities;

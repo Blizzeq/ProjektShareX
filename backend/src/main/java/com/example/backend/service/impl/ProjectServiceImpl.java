@@ -28,4 +28,9 @@ public class ProjectServiceImpl implements ProjectService {
     public List<Project> findProjectsOfUser(Long id) {
         return projectRepository.findByCreatedById(id);
     }
+
+    @Override
+    public void deleteProjectById(Long id) {
+        projectRepository.deleteById(id);
+    }
 }
