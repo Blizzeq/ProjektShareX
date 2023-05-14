@@ -1,5 +1,8 @@
 package com.example.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -8,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "tasks")
 public class Task {
 
@@ -20,17 +25,28 @@ public class Task {
 
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "status_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private Status status;
+    @Column(name = "status_name")
+    private String statusName;
 
+//    @JsonIgnore
+//    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+//    @JoinColumn(name = "status_id", referencedColumnName = "id", insertable = false, updatable = false)
+//    private Status status;
+
+    @Column(name = "project_id")
+    private Long projectId;
+
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "project_id")
+    @JoinColumn(name = "project_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Project project;
 
+    @Column(name = "assigned_user_id")
+    private Long assignedUserId;
+
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "assigned_to")
+    @JoinColumn(name = "assigned_user_id", referencedColumnName = "id", insertable = false, updatable = false)
     private User assignedTo;
 
 }
