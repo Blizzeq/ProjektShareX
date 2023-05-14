@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
@@ -27,6 +28,11 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public List<Project> findProjectsOfUser(Long id) {
         return projectRepository.findByCreatedById(id);
+    }
+
+    @Override
+    public Optional<Project> findProjectById(Long id) {
+        return projectRepository.findById(id);
     }
 
     @Override
