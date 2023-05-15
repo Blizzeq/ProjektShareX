@@ -103,7 +103,7 @@ const Home = () => {
                     <hr></hr>
                     <div className={'flex justify-end my-4 mx-4 gap-5'}>
                         <LinkContainer to={'/home'}>
-                            <a className={'text-darkblue py-2 px-4 rounded  border bg-gray-300 '}>Back</a>
+                            <a className={'text-darkblue py-2 px-4 rounded  border bg-gray-300 '}>Cancel</a>
                         </LinkContainer>
                         <button className={'text-white py-2 px-4 rounded border bg-blue '} onClick={() => updateUser()}>Save</button>
                     </div>

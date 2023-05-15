@@ -18,10 +18,12 @@ function Header(props) {
     return (
         <div className={'flex justify-between mx-6 h-20'}>
             <div className={'flex gap-12'}>
-                <div className={'flex gap-3 items-center'}>
-                    <img src={logo} alt={'logo'} className={'logo-home'}/>
-                    <p className={'SemiBold text-3xl'}>Share X</p>
-                </div>
+                <LinkContainer to={'/home'} className={'link'}>
+                    <div className={'flex gap-3 items-center'}>
+                        <img src={logo} alt={'logo'} className={'logo-home'}/>
+                        <p className={'SemiBold text-3xl'}>Share X</p>
+                    </div>
+                </LinkContainer>
                 <div className={'flex items-center'}>
                     <input type="text" placeholder={'Search...'} className={'input-home'}/>
                     <span className={'input-logo'}></span>
