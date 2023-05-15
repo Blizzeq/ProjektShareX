@@ -36,9 +36,8 @@ public class TaskController {
         return ResponseEntity.ok(taskService.findTasksByProjectAndStatus(projectId, statusName));
     }
 
-    @PostMapping("add/{projectId}/{statusName}")
-    public ResponseEntity<?> addTaskToStatus(@RequestBody Task task, @PathVariable Long projectId, @PathVariable String statusName) {
-        task.setStatusName(statusName);
+    @PostMapping("add/{projectId}")
+    public ResponseEntity<?> addTaskToStatus(@RequestBody Task task, @PathVariable Long projectId) {
         task.setProjectId(projectId);
 
         Task savedTask = taskService.saveTask(task);
