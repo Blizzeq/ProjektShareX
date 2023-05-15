@@ -18,21 +18,18 @@ import Modal from '../../Modal/Modal';
 import Project from '../../models/project';
 import ProjectService from '../../services/project.service';
 import Header from '../Header/Header';
-import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd';
 import AddModal from "../Modal/AddModal";
 import EditModal from "../Modal/EditModal";
-
+import TaskService from "../../services/task.service";
 
 const Home = () => {
 
 
     const currentUser = useSelector((state) => state.user);
-
     const [projectList, setProjectList] = useState([]);
-
     const [isModalOpen, setIsModalOpen] = useState(false);
-
     const [activeIndex, setActiveIndex] = useState(0);
+    const [activeProject, setActiveProject] = useState(null);
 
     const [items, setItems] = useState([
         {label: 'Home', icon: send},
@@ -40,20 +37,13 @@ const Home = () => {
         {label: 'Settings', icon: filter},
     ]);
 
-    const [tasks, setTasks] = useState([
-        {id: 1, title: 'Task 1', description: 'Description 1', status: 'To Do'},
-        {id: 2, title: 'Task 2', description: 'Description 2', status: 'In Progress'},
-        {id: 3, title: 'Task 3', description: 'Description 3', status: 'Done'},
-        {id: 4, title: 'Task 4', description: 'Description 4', status: 'To Do'},
-        {id: 5, title: 'Task 5', description: 'Description 5', status: 'In Progress'},
-        {id: 6, title: 'Task 6', description: 'Description 6', status: 'Done'},
-        {id: 7, title: 'Task 7', description: 'Description 7', status: 'To Do'},
-        {id: 8, title: 'Task 8', description: 'Description 8', status: 'In Progress'},
-        {id: 9, title: 'Task 9', description: 'Description 9', status: 'Done'},
-    ]);
-
-    const handleClick = (index) => {
-        setActiveIndex(index);
+    const handleClick = async (projectId) => {
+        try {
+            const response = await ProjectService.getProjectById(projectId);
+            setActiveProject(response.data);
+        } catch (error) {
+            console.error('Error while fetching project details:', error);
+        }
     };
 
     const handleAddProjectClick = () => {
@@ -81,28 +71,30 @@ const Home = () => {
         setShowModal(false);
     };
 
-    const handleNewTaskSubmit = () => {
-        // Generowanie unikalnego identyfikatora dla nowego zadania
-        const newTaskId = tasks.length > 0 ? tasks[tasks.length - 1].id + 1 : 1;
+    const handleNewTaskSubmit = async () => {
+        try {
+            const { id: projectId } = activeProject;
+            const task = {
+                name: newTaskTitle,
+                description: newTaskDescription,
+                statusName: newTaskStatus,
+            };
 
-        // Tworzenie nowego zadania
-        const newTask = {
-            id: newTaskId,
-            title: newTaskTitle,
-            description: newTaskDescription,
-            status: newTaskStatus,
-        };
+            const response = await TaskService.addTask(projectId, task);
 
-        // Dodawanie nowego zadania do listy
-        setTasks([...tasks, newTask]);
+            const updatedTask = {
+                ...task,
+                id: response.data.id,
+            };
 
-        // Resetowanie wartości pól formularza
-        setNewTaskTitle('');
-        setNewTaskDescription('');
-        setNewTaskStatus('To Do');
+            const updatedProject = { ...activeProject };
+            updatedProject.tasks.push(updatedTask);
+            setActiveProject(updatedProject);
 
-        // Zamykanie modala
-        closeModal();
+            closeModal();
+        } catch (error) {
+            console.error('Error while adding task:', error);
+        }
     };
 
     const [showEditModal, setShowEditModal] = useState(false);
@@ -118,27 +110,50 @@ const Home = () => {
         setShowEditModal(false);
     };
 
-    const handleEditTaskSubmit = (updatedTask) => {
-        const updatedTasks = tasks.map((task) => {
-            if (task.id === updatedTask.id) {
-                return updatedTask;
-            }
-            return task;
-        });
+    const handleEditTaskSubmit = async (updatedTask) => {
+        try {
+            const { id: projectId } = activeProject;
+            const taskId = updatedTask.id;
 
-        setTasks(updatedTasks);
-        closeEditModal();
+            const existingTask = activeProject.tasks.find((task) => task.id === updatedTask.id);
+            console.log(existingTask)
+
+            const updatedTaskWithValues = {
+                ...existingTask,
+                name: updatedTask.name || existingTask.name,
+                statusName: updatedTask.statusName || existingTask.statusName,
+                description: updatedTask.description || existingTask.description,
+            };
+            console.log(updatedTaskWithValues)
+
+
+            await TaskService.editTask(projectId, taskId, updatedTaskWithValues);
+
+            const updatedTasks = activeProject.tasks.map((task) => {
+                if (task.id === updatedTask.id) {
+                    return updatedTaskWithValues;
+                }
+                return task;
+            });
+
+            setActiveProject((prevProject) => ({
+                ...prevProject,
+                tasks: updatedTasks,
+            }));
+
+            closeEditModal();
+        } catch (error) {
+            console.error('Error while editing task:', error);
+        }
     };
-
-
 
     useEffect(() => {
         ProjectService.getAllProjects().then((response) => {
             console.log(response.data);
             setProjectList(response.data);
+            setActiveProject(response.data[0]);
         });
     }, []);
-
 
     return (
         <div className={'home Regular right'}>
@@ -146,15 +161,13 @@ const Home = () => {
             <hr></hr>
             <div className={'flex w-full'}>
                 <div className={'flex flex-col w-2/12 items-center gap-5 pt-8 kanban-menu h-screen'}>
-                    {projectList.map((item, index) => (
+                    {projectList.map((item) => (
                         <div
                             key={item.id}
-                            className={
-                                index === activeIndex
-                                    ? 'bg-blue flex gap-4 px-4 py-2 rounded text-white'
-                                    : 'bg-gray-300 flex gap-4 px-4 py-2 rounded'
-                            }
-                            onClick={() => handleClick(index)}
+                            className={`${
+                                activeProject?.id === item.id ? 'bg-blue' : 'bg-gray-300'
+                            } flex gap-4 px-4 py-2 rounded cursor-pointer`}
+                            onClick={() => handleClick(item.id)}
                         >
                             <p>{item.name}</p>
                         </div>
@@ -167,54 +180,48 @@ const Home = () => {
                 </div>
                 <div className={'flex flex-col w-10/12'}>
                     <div className={'option-container'}>
-                        <button onClick={openModal} id={'add-button'}>Add task</button>
-                        <button onClick={openModal} id={'add-button'}>Add user</button>
-                        <button onClick={openModal} id={'delete-button'}>Delete project</button>
+                        <button onClick={openModal} id={'add-button'}>
+                            Add task
+                        </button>
+                        <button onClick={openModal} id={'add-button'}>
+                            Add user
+                        </button>
+                        <button onClick={openModal} id={'delete-button'}>
+                            Delete project
+                        </button>
                     </div>
                     <div className={'task-container'}>
-                        <div className={'task-column'}>
-                            <h1>To Do</h1>
-                            <div className={'tasks'}>
-                                {/*display all to do tasks*/}
-                                {tasks.filter((task) => task.status === 'To Do').map((task) => (
-                                    <div className={'task'} key={task.id} onClick={() => openEditModal(task)}>
-                                        <h2>{task.title}</h2>
-                                        <p>{task.description}</p>
-                                        <p>{task.status}</p>
+                        {activeProject && (
+                            <>
+                                {/*<h2>{activeProject.name}</h2>*/}
+                                {Object.entries(activeProject.tasks.reduce((tasksByStatus, task) => {
+                                    if (!tasksByStatus[task.statusName]) {
+                                        tasksByStatus[task.statusName] = [];
+                                    }
+                                    tasksByStatus[task.statusName].push(task);
+                                    return tasksByStatus;
+                                }, {})).map(([statusName, tasks]) => (
+                                    <div key={statusName} className={'task-column'}>
+                                        <h1>{statusName}</h1>
+                                        <div className={'tasks'}>
+                                            {tasks.map((task) => (
+                                                <div className={'task'} key={task.id} onClick={() => openEditModal(task)}>
+                                                    <h2>{task.name}</h2>
+                                                    <p>{task.description}</p>
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
                                 ))}
-                            </div>
-                        </div>
-                        <div className={'task-column'}>
-                            <h1>In Progress</h1>
-                            <div className={'tasks'}>
-                                {tasks.filter((task) => task.status === 'In Progress').map((task) => (
-                                    <div className={'task'} key={task.id} onClick={() => openEditModal(task)}>
-                                        <h2>{task.title}</h2>
-                                        <p>{task.description}</p>
-                                        <p>{task.status}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                        <div className={'task-column'}>
-                            <h1>Done</h1>
-                            <div className={'tasks'}>
-                                {tasks.filter((task) => task.status === 'Done').map((task) => (
-                                    <div className={'task'} key={task.id} onClick={() => openEditModal(task)}>
-                                        <h2>{task.title}</h2>
-                                        <p>{task.description}</p>
-                                        <p>{task.status}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
+                            </>
+                        )}
                     </div>
                 </div>
                 {isModalOpen && <Modal isOpen={isModalOpen} onClose={handleModalClose} onSubmit={handleModalSubmit}/>}
                 {showModal && <AddModal
                     onClose={closeModal}
                     onSubmit={handleNewTaskSubmit}
+                    statusList={Array.from(new Set(activeProject.tasks.map((task) => task.statusName)))}
                     projectName={newTaskTitle}
                     setProjectName={setNewTaskTitle}
                     projectDescription={newTaskDescription}
@@ -228,6 +235,7 @@ const Home = () => {
                         onSubmit={handleEditTaskSubmit}
                         task={selectedTask}
                         setTask={setSelectedTask}
+                        statusList={Array.from(new Set(activeProject.tasks.map((task) => task.statusName)))}
                     />
                 )}
             </div>
