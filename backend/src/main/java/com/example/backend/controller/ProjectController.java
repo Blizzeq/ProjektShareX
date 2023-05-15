@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("api/project")
 public class ProjectController {
@@ -24,9 +26,19 @@ public class ProjectController {
         this.taskService = taskService;
     }
 
-    @GetMapping
+    @GetMapping("all")
     public ResponseEntity<?> getAllProjectsOfUser(@AuthenticationPrincipal UserPrinciple userPrinciple) {
         return ResponseEntity.ok(projectService.findProjectsOfUser(userPrinciple.getId()));
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<?> getProjectById(@PathVariable Long id) {
+        Optional<Project> project = projectService.findProjectById(id);
+        if (project.isPresent()) {
+            return ResponseEntity.ok(project);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping("create")
