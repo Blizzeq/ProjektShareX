@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const AddModal = ({ onClose, onSubmit, projectName, setProjectName, projectDescription, setProjectDescription, projectStatus, setProjectStatus }) => {
+const AddModal = ({ onClose, onSubmit, statusList, projectName, setProjectName, projectDescription, setProjectDescription, projectStatus, setProjectStatus }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         onSubmit();
@@ -34,14 +34,16 @@ const AddModal = ({ onClose, onSubmit, projectName, setProjectName, projectDescr
                     <div className={'mt-4 flex justify-between'}>
                         <label htmlFor="project-status">Task Status</label>
                         <select
-                            id="project-status"
-                            name="project-status"
+                            id="task-status"
+                            name="task-status"
                             value={projectStatus}
                             onChange={(e) => setProjectStatus(e.target.value)}
                         >
-                            <option value="To Do">To Do</option>
-                            <option value="In Progress">In Progress</option>
-                            <option value="Done">Done</option>
+                            {statusList.map((status) => (
+                                <option key={status} value={status}>
+                                    {status}
+                                </option>
+                            ))}
                         </select>
                     </div>
                     <div className={'flex justify-end mt-8'}>
