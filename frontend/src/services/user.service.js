@@ -10,7 +10,7 @@ class UserService {
     }
 
     getAllUsers(id) {
-        return axios.get('http://localhost:8080/api/usersList' + id, {headers: authHeader()})
+        return axios.get('http://localhost:8080/api/usersList/' + id, {headers: authHeader()})
     }
 }
 
