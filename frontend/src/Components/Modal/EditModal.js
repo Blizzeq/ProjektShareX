@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 
-const EditModal = ({ task, onClose, onSubmit }) => {
-    const [title, setTitle] = useState(task.title);
+const EditModal = ({ task, statusList, onClose, onSubmit }) => {
+    const [name, setName] = useState(task.name);
     const [description, setDescription] = useState(task.description);
-    const [status, setStatus] = useState(task.status);
+    const [statusName, setStatusName] = useState(task.statusName);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onSubmit({ id: task.id, title, description, status });
+        onSubmit({ id: task.id, name, description, statusName });
     };
 
     return (
@@ -21,8 +21,8 @@ const EditModal = ({ task, onClose, onSubmit }) => {
                             type="text"
                             id="project-name"
                             name="task-title"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
                         />
                     </div>
                     <div className={'mt-4 flex justify-between'}>
@@ -40,12 +40,14 @@ const EditModal = ({ task, onClose, onSubmit }) => {
                         <select
                             id="task-status"
                             name="task-status"
-                            value={status}
-                            onChange={(e) => setStatus(e.target.value)}
+                            value={statusName}
+                            onChange={(e) => setStatusName(e.target.value)}
                         >
-                            <option value="To Do">To Do</option>
-                            <option value="In Progress">In Progress</option>
-                            <option value="Done">Done</option>
+                            {statusList.map((status) => (
+                                <option key={status} value={status}>
+                                    {status}
+                                </option>
+                            ))}
                         </select>
                     </div>
                     <div className={'flex justify-end mt-8'}>
