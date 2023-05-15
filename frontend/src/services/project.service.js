@@ -10,7 +10,15 @@ class ProjectService {
     }
 
     getAllProjects() {
-        return axios.get(API_URL, {headers: authHeader()});
+        return axios.get(API_URL + '/all', {headers: authHeader()});
+    }
+
+    getProjectById(id) {
+        return axios.get(API_URL + '/' + id, {headers: authHeader()})
+    }
+
+    deleteProject(id) {
+        return axios.delete(API_URL + '/' + id, {headers: authHeader()})
     }
 
 }
