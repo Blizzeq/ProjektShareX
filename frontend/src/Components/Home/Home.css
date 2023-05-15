@@ -120,7 +120,7 @@
 .task-container{
     display: grid;
 
-    width: 100%;
+    width: 97%;
     grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
     margin: 0 1.5rem 0 1.5rem;
@@ -174,4 +174,34 @@
     font-size: 1.5rem;
     font-family: 'InterBold', sans-serif;
     text-shadow: 0 4px 4px rgba(0, 0, 0, 0.15);
+}
+
+.option-container{
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    margin: 1.5rem 1.5rem 1.5rem 0;
+    gap: 1rem;
+}
+
+#add-button{
+    border-radius: 10px;
+    padding: 0.5rem 1.5rem 0.5rem 1.5rem;
+    background-color: #3A57E8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    color: white;
+}
+
+#delete-button{
+    border-radius: 10px;
+    padding: 0.5rem 1.5rem 0.5rem 1.5rem;
+    background-color: #fc0000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    color: white;
 }

@@ -18,9 +18,9 @@ import Modal from '../../Modal/Modal';
 import Project from '../../models/project';
 import ProjectService from '../../services/project.service';
 import Header from '../Header/Header';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-
-
+import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd';
+import AddModal from "../Modal/AddModal";
+import EditModal from "../Modal/EditModal";
 
 
 const Home = () => {
@@ -68,6 +68,70 @@ const Home = () => {
         setIsModalOpen(false);
     };
 
+    const [showModal, setShowModal] = useState(false);
+    const [newTaskTitle, setNewTaskTitle] = useState('');
+    const [newTaskDescription, setNewTaskDescription] = useState('');
+    const [newTaskStatus, setNewTaskStatus] = useState('To Do');
+
+    const openModal = () => {
+        setShowModal(true);
+    };
+
+    const closeModal = () => {
+        setShowModal(false);
+    };
+
+    const handleNewTaskSubmit = () => {
+        // Generowanie unikalnego identyfikatora dla nowego zadania
+        const newTaskId = tasks.length > 0 ? tasks[tasks.length - 1].id + 1 : 1;
+
+        // Tworzenie nowego zadania
+        const newTask = {
+            id: newTaskId,
+            title: newTaskTitle,
+            description: newTaskDescription,
+            status: newTaskStatus,
+        };
+
+        // Dodawanie nowego zadania do listy
+        setTasks([...tasks, newTask]);
+
+        // Resetowanie wartości pól formularza
+        setNewTaskTitle('');
+        setNewTaskDescription('');
+        setNewTaskStatus('To Do');
+
+        // Zamykanie modala
+        closeModal();
+    };
+
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [selectedTask, setSelectedTask] = useState(null);
+
+    const openEditModal = (task) => {
+        setSelectedTask(task);
+        setShowEditModal(true);
+    };
+
+    const closeEditModal = () => {
+        setSelectedTask(null);
+        setShowEditModal(false);
+    };
+
+    const handleEditTaskSubmit = (updatedTask) => {
+        const updatedTasks = tasks.map((task) => {
+            if (task.id === updatedTask.id) {
+                return updatedTask;
+            }
+            return task;
+        });
+
+        setTasks(updatedTasks);
+        closeEditModal();
+    };
+
+
+
     useEffect(() => {
         ProjectService.getAllProjects().then((response) => {
             console.log(response.data);
@@ -101,14 +165,19 @@ const Home = () => {
                         <p>Add project</p>
                     </div>
                 </div>
-                <div className={'flex w-10/12 pt-8'}>
+                <div className={'flex flex-col w-10/12'}>
+                    <div className={'option-container'}>
+                        <button onClick={openModal} id={'add-button'}>Add task</button>
+                        <button onClick={openModal} id={'add-button'}>Add user</button>
+                        <button onClick={openModal} id={'delete-button'}>Delete project</button>
+                    </div>
                     <div className={'task-container'}>
                         <div className={'task-column'}>
                             <h1>To Do</h1>
                             <div className={'tasks'}>
                                 {/*display all to do tasks*/}
                                 {tasks.filter((task) => task.status === 'To Do').map((task) => (
-                                    <div className={'task'}>
+                                    <div className={'task'} key={task.id} onClick={() => openEditModal(task)}>
                                         <h2>{task.title}</h2>
                                         <p>{task.description}</p>
                                         <p>{task.status}</p>
@@ -120,7 +189,7 @@ const Home = () => {
                             <h1>In Progress</h1>
                             <div className={'tasks'}>
                                 {tasks.filter((task) => task.status === 'In Progress').map((task) => (
-                                    <div className={'task'}>
+                                    <div className={'task'} key={task.id} onClick={() => openEditModal(task)}>
                                         <h2>{task.title}</h2>
                                         <p>{task.description}</p>
                                         <p>{task.status}</p>
@@ -132,7 +201,7 @@ const Home = () => {
                             <h1>Done</h1>
                             <div className={'tasks'}>
                                 {tasks.filter((task) => task.status === 'Done').map((task) => (
-                                    <div className={'task'}>
+                                    <div className={'task'} key={task.id} onClick={() => openEditModal(task)}>
                                         <h2>{task.title}</h2>
                                         <p>{task.description}</p>
                                         <p>{task.status}</p>
@@ -143,6 +212,24 @@ const Home = () => {
                     </div>
                 </div>
                 {isModalOpen && <Modal isOpen={isModalOpen} onClose={handleModalClose} onSubmit={handleModalSubmit}/>}
+                {showModal && <AddModal
+                    onClose={closeModal}
+                    onSubmit={handleNewTaskSubmit}
+                    projectName={newTaskTitle}
+                    setProjectName={setNewTaskTitle}
+                    projectDescription={newTaskDescription}
+                    setProjectDescription={setNewTaskDescription}
+                    projectStatus={newTaskStatus}
+                    setProjectStatus={setNewTaskStatus}
+                />}
+                {showEditModal && (
+                    <EditModal
+                        onClose={closeEditModal}
+                        onSubmit={handleEditTaskSubmit}
+                        task={selectedTask}
+                        setTask={setSelectedTask}
+                    />
+                )}
             </div>
         </div>
     );
