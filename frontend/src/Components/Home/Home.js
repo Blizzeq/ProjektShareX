@@ -21,6 +21,8 @@ import Header from '../Header/Header';
 import AddModal from "../Modal/AddModal";
 import EditModal from "../Modal/EditModal";
 import TaskService from "../../services/task.service";
+import UserModal from "../Modal/UserModal";
+import UserService from "../../services/user.service";
 
 const Home = () => {
 
@@ -30,6 +32,7 @@ const Home = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [activeIndex, setActiveIndex] = useState(0);
     const [activeProject, setActiveProject] = useState(null);
+    const [users, setUsers] = useState([]);
 
     const [items, setItems] = useState([
         {label: 'Home', icon: send},
@@ -71,6 +74,10 @@ const Home = () => {
         setShowModal(false);
     };
 
+    const handleUsersSubmit = async () => {
+
+    }
+
     const handleNewTaskSubmit = async () => {
         try {
             const { id: projectId } = activeProject;
@@ -98,11 +105,21 @@ const Home = () => {
     };
 
     const [showEditModal, setShowEditModal] = useState(false);
+    const [showUserModal, setUserModal] = useState(false);
     const [selectedTask, setSelectedTask] = useState(null);
+    const [username, setUsername] = useState(null);
 
     const openEditModal = (task) => {
         setSelectedTask(task);
         setShowEditModal(true);
+    };
+
+    const openUserModal = () => {
+        setUserModal(true);
+    };
+
+    const closeUserModal = () => {
+        setUserModal(false);
     };
 
     const closeEditModal = () => {
@@ -155,6 +172,16 @@ const Home = () => {
         });
     }, []);
 
+    useEffect(() => {
+        UserService.getAllUsers(currentUser.id)
+            .then((response) => {
+                setUsers(response.data);
+            })
+            .catch((error) => {
+                console.error('Error while fetching users:', error);
+            });
+    }, []);
+
     return (
         <div className={'home Regular right'}>
             <Header/>
@@ -183,7 +210,7 @@ const Home = () => {
                         <button onClick={openModal} id={'add-button'}>
                             Add task
                         </button>
-                        <button onClick={openModal} id={'add-button'}>
+                        <button onClick={openUserModal} id={'add-button'}>
                             Add user
                         </button>
                         <button onClick={openModal} id={'delete-button'}>
@@ -229,6 +256,13 @@ const Home = () => {
                     projectStatus={newTaskStatus}
                     setProjectStatus={setNewTaskStatus}
                 />}
+                {showUserModal && (<UserModal
+                    onClose={closeUserModal}
+                    onSubmit={handleUsersSubmit}
+                    usersList={users}
+                    username={username}
+                    setUsername={setUsername}
+                />)}
                 {showEditModal && (
                     <EditModal
                         onClose={closeEditModal}
