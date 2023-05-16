@@ -29,4 +29,12 @@ const resetPasswordSchema = yup.object().shape({
     email: yup.string().email("Please provide a valid email.").required("Email is required.")
 });
 
-export  {loginSchema, registerSchema, resetPasswordSchema};
+const profileSchema = yup.object().shape({
+    username: yup.string().required('Username is required').max(20, 'Username must be at most 20 characters'),
+    firstName: yup.string().required('First name is required').max(20, 'First name must be at most 20 characters').matches(/^[A-Za-z]{2,}$/, 'First name must contain only letters and have at least 2 characters.'),
+    lastName: yup.string().required('Last name is required').max(20, 'Last name must be at most 20 characters').matches(/^[A-Za-z]{2,}$/, 'Last name must contain only letters and have at least 2 characters.'),
+    oldPassword: yup.string().required('Old Password is required').max(20, 'Old password must be at most 20 characters'),
+    newPassword: yup.string().required('New Password is required').max(20, 'New password must be at most 20 characters'),
+});
+
+export  {loginSchema, registerSchema, resetPasswordSchema, profileSchema};
