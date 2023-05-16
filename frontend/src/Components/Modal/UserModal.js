@@ -8,12 +8,12 @@ const UserModal = ({ onClose, onSubmit, usersList, username, setUsername }) => {
 
     return (
         <div className={'fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center'}>
-            <div className={'bg-white p-8 rounded'}>
+            <div className={'bg-white p-8 rounded w-2/12'}>
                 <h2 className={'text-xl font-bold mb-4'}>Add users to project</h2>
                 <form onSubmit={handleSubmit}>
                     <div className={'mt-4 flex justify-between'}>
                         <label htmlFor="project-status">Users list</label>
-                        <select value={username} onChange={(e) => setUsername(e.target.value)}>
+                        <select id={'project-name'} value={username} onChange={(e) => setUsername(e.target.value)}>
                             {usersList.map((user) => (
                                 <option key={user} value={user}>
                                     {user}

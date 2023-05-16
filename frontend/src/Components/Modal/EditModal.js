@@ -7,6 +7,10 @@ const EditModal = ({ task, statusList, onClose, onSubmit }) => {
     const [description, setDescription] = useState(task.description);
     const [statusName, setStatusName] = useState(task.statusName);
 
+    const handleSubmit2 = (e) => {
+        e.preventDefault();
+        onSubmit({ id: task.id, name, description, statusName });
+    };
 
     const formik = useFormik({
         initialValues: {
@@ -15,21 +19,17 @@ const EditModal = ({ task, statusList, onClose, onSubmit }) => {
         },
         validationSchema: editModalSchema,
         onSubmit: (values) => {
-            handleSubmit(values);
+            handleSubmit2(values);
             console.log(values);
         },
     });
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        onSubmit({ id: task.id, name, description, statusName });
-    };
 
     return (
         <div className={'fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center'}>
             <div className={'bg-white p-8 rounded'}>
                 <h2 className={'text-xl font-bold mb-4'}>Edit Task</h2>
-                <form onSubmit={formik.handleSubmit}>
+                <form onSubmit={handleSubmit2}>
                     <div className={'flex justify-between'}>
                         <label htmlFor="task-title">Task Title</label>
                         <input
@@ -59,7 +59,7 @@ const EditModal = ({ task, statusList, onClose, onSubmit }) => {
                     <div className={'mt-4 flex justify-between'}>
                         <label htmlFor="task-status">Task Status</label>
                         <select
-                            id="task-status"
+                            id={'project-name'}
                             name="task-status"
                             value={statusName}
                             onChange={(e) => setStatusName(e.target.value)}

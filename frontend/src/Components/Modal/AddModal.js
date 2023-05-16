@@ -25,7 +25,7 @@ const AddModal = ({ onClose, onSubmit, statusList, projectName, setProjectName, 
         <div className={'fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center'}>
             <div className={'bg-white p-8 rounded'}>
                 <h2 className={'text-xl font-bold mb-4'}>Create new task</h2>
-                <form onSubmit={formik.handleSubmit}>
+                <form onSubmit={handleSubmit}>
                     <div className={'flex justify-between'}>
                         <label htmlFor="project-name">Task Title</label>
                         <input
@@ -55,7 +55,7 @@ const AddModal = ({ onClose, onSubmit, statusList, projectName, setProjectName, 
                     <div className={'mt-4 flex justify-between'}>
                         <label htmlFor="project-status">Task Status</label>
                         <select
-                            id="task-status"
+                            id={'project-name'}
                             name="task-status"
                             value={projectStatus}
                             onChange={(e) => setProjectStatus(e.target.value)}
