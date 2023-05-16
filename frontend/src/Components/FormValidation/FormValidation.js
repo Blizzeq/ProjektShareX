@@ -37,4 +37,14 @@ const profileSchema = yup.object().shape({
     newPassword: yup.string().required('New Password is required').max(20, 'New password must be at most 20 characters'),
 });
 
-export  {loginSchema, registerSchema, resetPasswordSchema, profileSchema};
+const editModalSchema = yup.object().shape({
+    title: yup.string().required('Title is required').max(20, 'Title must be at most 20 characters'),
+    description: yup.string().required('Description is required').max(100, 'Description must be at most 100 characters'),
+})
+
+const addModalSchema = yup.object().shape({
+    title: yup.string().required('Title is required').max(20, 'Title must be at most 20 characters'),
+    description: yup.string().required('Description is required').max(100, 'Description must be at most 100 characters'),
+})
+
+export  {loginSchema, registerSchema, resetPasswordSchema, profileSchema, editModalSchema, addModalSchema};
