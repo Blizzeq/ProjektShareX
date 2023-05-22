@@ -23,14 +23,13 @@ import EditModal from "../Modal/EditModal";
 import TaskService from "../../services/task.service";
 import UserModal from "../Modal/UserModal";
 import UserService from "../../services/user.service";
+import AddStatusModal from "../Modal/AddStatusModal";
 
 const Home = () => {
-
 
     const currentUser = useSelector((state) => state.user);
     const [projectList, setProjectList] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [activeIndex, setActiveIndex] = useState(0);
     const [activeProject, setActiveProject] = useState(null);
     const [users, setUsers] = useState([]);
 
@@ -62,7 +61,9 @@ const Home = () => {
     };
 
     const [showModal, setShowModal] = useState(false);
+    const [showStatusModal, setShowStatusModal] = useState(false);
     const [newTaskTitle, setNewTaskTitle] = useState('');
+    const [newStatus, setNewStatus] = useState('');
     const [newTaskDescription, setNewTaskDescription] = useState('');
     const [newTaskStatus, setNewTaskStatus] = useState('To Do');
 
@@ -72,6 +73,14 @@ const Home = () => {
 
     const closeModal = () => {
         setShowModal(false);
+    };
+
+    const openStatusModal = () => {
+        setShowStatusModal(true);
+    };
+
+    const closeStatusModal = () => {
+        setShowStatusModal(false);
     };
 
     const handleUsersSubmit = async () => {
@@ -104,10 +113,49 @@ const Home = () => {
         }
     };
 
+    const handleNewStatusSubmit = async () => {
+        try {
+            const { id: projectId } = activeProject;
+            const task = {
+                statusName: newStatus,
+            };
+
+            const response = await TaskService.addTask(projectId, task);
+
+            const updatedTask = {
+                ...task,
+                id: response.data.id,
+            };
+
+            const updatedProject = { ...activeProject };
+            updatedProject.tasks.push(updatedTask);
+
+            ProjectService.getProjectById(projectId)
+                .then((response) => {
+                    setActiveProject(response.data);
+                    closeStatusModal();
+                })
+                .catch((error) => {
+                    console.error('Error while fetching project details:', error);
+                });
+        } catch (error) {
+            console.error('Error while adding status:', error);
+        }
+    };
+
     const [showEditModal, setShowEditModal] = useState(false);
     const [showUserModal, setUserModal] = useState(false);
     const [selectedTask, setSelectedTask] = useState(null);
     const [username, setUsername] = useState(null);
+    const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+
+    const openDeleteConfirmation = () => {
+        setShowDeleteConfirmation(true);
+    };
+
+    const closeDeleteConfirmation = () => {
+        setShowDeleteConfirmation(false);
+    };
 
     const openEditModal = (task) => {
         setSelectedTask(task);
@@ -143,7 +191,6 @@ const Home = () => {
             };
             console.log(updatedTaskWithValues)
 
-
             await TaskService.editTask(projectId, taskId, updatedTaskWithValues);
 
             const updatedTasks = activeProject.tasks.map((task) => {
@@ -161,6 +208,36 @@ const Home = () => {
             closeEditModal();
         } catch (error) {
             console.error('Error while editing task:', error);
+        }
+    };
+
+    const handleDeleteTask = async (taskId) => {
+        try {
+            await TaskService.deleteTask(taskId);
+
+            const updatedTasks = activeProject.tasks.filter(task => task.id !== taskId);
+            setActiveProject(prevProject => ({
+                ...prevProject,
+                tasks: updatedTasks
+            }));
+        } catch (error) {
+            console.error('Error while deleting task:', error);
+        }
+    };
+
+    const handleDeleteProject = (projectId) => {
+        openDeleteConfirmation();
+        setActiveProject(projectList.find(project => project.id === projectId));
+    };
+
+    const handleDeleteConfirmation = async (projectId) => {
+        try {
+            await ProjectService.deleteProject(projectId);
+            setProjectList(prevList => prevList.filter(project => project.id !== projectId));
+            setActiveProject(null);
+            closeDeleteConfirmation();
+        } catch (error) {
+            console.error('Error while deleting project:', error);
         }
     };
 
@@ -207,36 +284,53 @@ const Home = () => {
                 </div>
                 <div className={'flex flex-col w-10/12'}>
                     <div className={'option-container'}>
+                        <button onClick={openStatusModal} id={'add-button'}>
+                            Add status
+                        </button>
                         <button onClick={openModal} id={'add-button'}>
                             Add task
                         </button>
                         <button onClick={openUserModal} id={'add-button'}>
                             Add user
                         </button>
-                        <button onClick={openModal} id={'delete-button'}>
+                        <button onClick={() => handleDeleteProject(activeProject.id)} id={'delete-button'}>
                             Delete project
                         </button>
                     </div>
                     <div className={'task-container'}>
                         {activeProject && (
                             <>
-                                {/*<h2>{activeProject.name}</h2>*/}
-                                {Object.entries(activeProject.tasks.reduce((tasksByStatus, task) => {
-                                    if (!tasksByStatus[task.statusName]) {
-                                        tasksByStatus[task.statusName] = [];
-                                    }
-                                    tasksByStatus[task.statusName].push(task);
-                                    return tasksByStatus;
-                                }, {})).map(([statusName, tasks]) => (
+                                {Object.entries(
+                                    activeProject.tasks.reduce((tasksByStatus, task) => {
+                                        if (!tasksByStatus[task.statusName]) {
+                                            tasksByStatus[task.statusName] = [];
+                                        }
+                                        tasksByStatus[task.statusName].push(task);
+                                        return tasksByStatus;
+                                    }, {})
+                                ).map(([statusName, tasks]) => (
                                     <div key={statusName} className={'task-column'}>
                                         <h1>{statusName}</h1>
                                         <div className={'tasks'}>
-                                            {tasks.map((task) => (
-                                                <div className={'task'} key={task.id} onClick={() => openEditModal(task)}>
-                                                    <h2>{task.name}</h2>
-                                                    <p>{task.description}</p>
-                                                </div>
-                                            ))}
+                                            {tasks
+                                                .filter((task) => task.name !== null && task.description !== null)
+                                                .map((task) => (
+                                                    <div
+                                                        className={'task'}
+                                                        key={task.id}
+                                                        onClick={(e) => {
+                                                            if (!e.target.classList.contains('delete-button')) {
+                                                                openEditModal(task);
+                                                            }
+                                                        }}
+                                                    >
+                                                        <h2>{task.name}</h2>
+                                                        <p>{task.description}</p>
+                                                        <button onClick={() => handleDeleteTask(task.id)} className="delete-button">
+                                                            Delete
+                                                        </button>
+                                                    </div>
+                                                ))}
                                         </div>
                                     </div>
                                 ))}
@@ -256,6 +350,12 @@ const Home = () => {
                     projectStatus={newTaskStatus}
                     setProjectStatus={setNewTaskStatus}
                 />}
+                {showStatusModal && <AddStatusModal
+                    onClose={closeStatusModal}
+                    onSubmit={handleNewStatusSubmit}
+                    statusName={newStatus}
+                    setStatusName={setNewStatus}
+                />}
                 {showUserModal && (<UserModal
                     onClose={closeUserModal}
                     onSubmit={handleUsersSubmit}
@@ -271,6 +371,17 @@ const Home = () => {
                         setTask={setSelectedTask}
                         statusList={Array.from(new Set(activeProject.tasks.map((task) => task.statusName)))}
                     />
+                )}
+                {showDeleteConfirmation && (
+                    <div className="delete-confirmation-modal">
+                        <div className="delete-confirmation-content">
+                            <h3>Are you sure you want to delete this project?</h3>
+                            <div className="delete-confirmation-buttons">
+                                <button onClick={() => handleDeleteConfirmation(activeProject.id)}>Delete Project</button>
+                                <button onClick={closeDeleteConfirmation}>Cancel</button>
+                            </div>
+                        </div>
+                    </div>
                 )}
             </div>
         </div>
