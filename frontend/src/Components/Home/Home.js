@@ -29,6 +29,7 @@ import plusproject from "../../Assets/Home/Plus-project.svg";
 import adduser from "../../Assets/Home/UserPlus.svg";
 import addtask from "../../Assets/Home/PlusCircle.svg";
 import deletetask from "../../Assets/Home/MinusCircle.svg";
+import DeleteModal from "../Modal/DeleteModal";
 
 const Home = () => {
 
@@ -404,15 +405,11 @@ const Home = () => {
                     />
                 )}
                 {showDeleteConfirmation && (
-                    <div className="delete-confirmation-modal">
-                        <div className="delete-confirmation-content">
-                            <h3>Are you sure you want to delete this project?</h3>
-                            <div className="delete-confirmation-buttons">
-                                <button onClick={() => handleDeleteConfirmation(activeProject.id)}>Delete Project</button>
-                                <button onClick={closeDeleteConfirmation}>Cancel</button>
-                            </div>
-                        </div>
-                    </div>
+                    <DeleteModal
+                        activeProject={activeProject}
+                        handleDeleteConfirmation={handleDeleteConfirmation}
+                        closeDeleteConfirmation={closeDeleteConfirmation}
+                    />
                 )}
             </div>
         </div>
