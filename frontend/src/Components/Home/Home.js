@@ -72,6 +72,12 @@ const Home = () => {
     const [newStatus, setNewStatus] = useState('');
     const [newTaskDescription, setNewTaskDescription] = useState('');
     const [newTaskStatus, setNewTaskStatus] = useState('To Do');
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [showUserModal, setUserModal] = useState(false);
+    const [selectedTask, setSelectedTask] = useState(null);
+    const [username, setUsername] = useState(null);
+    const [userId, setUserId] = useState(null)
+    const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
     const openModal = () => {
         setShowModal(true);
@@ -90,7 +96,19 @@ const Home = () => {
     };
 
     const handleUsersSubmit = async () => {
+        try {
+            const { id: projectId } = activeProject;
+            const user = {
+                userId: userId,
+            };
 
+            console.log(projectId + '---' + user.userId)
+            await UserService.addUserToProject(projectId, user.userId);
+
+            closeUserModal();
+        } catch (error) {
+            console.error('Error while adding user to project:', error);
+        }
     }
 
     const handleNewTaskSubmit = async () => {
@@ -148,12 +166,6 @@ const Home = () => {
             console.error('Error while adding status:', error);
         }
     };
-
-    const [showEditModal, setShowEditModal] = useState(false);
-    const [showUserModal, setUserModal] = useState(false);
-    const [selectedTask, setSelectedTask] = useState(null);
-    const [username, setUsername] = useState(null);
-    const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
     const openDeleteConfirmation = () => {
         setShowDeleteConfirmation(true);
@@ -240,8 +252,13 @@ const Home = () => {
         try {
             await ProjectService.deleteProject(projectId);
             setProjectList(prevList => prevList.filter(project => project.id !== projectId));
-            setActiveProject(null);
-            closeDeleteConfirmation();
+
+            ProjectService.getAllProjects().then((response) => {
+                console.log(response.data);
+                setProjectList(response.data);
+                setActiveProject(response.data[0]);
+                closeDeleteConfirmation();
+            });
         } catch (error) {
             console.error('Error while deleting project:', error);
         }
@@ -256,14 +273,16 @@ const Home = () => {
     }, []);
 
     useEffect(() => {
-        UserService.getAllUsers(currentUser.id)
-            .then((response) => {
-                setUsers(response.data);
-            })
-            .catch((error) => {
-                console.error('Error while fetching users:', error);
-            });
-    }, []);
+        if (activeProject) {
+            UserService.getAllUsers(activeProject.id)
+                .then((response) => {
+                    setUsers(response.data);
+                })
+                .catch((error) => {
+                    console.error('Error while fetching users:', error);
+                });
+        }
+    }, [activeProject]);
 
     return (
         <div className={'home Regular right'}>
@@ -394,6 +413,8 @@ const Home = () => {
                     usersList={users}
                     username={username}
                     setUsername={setUsername}
+                    userId={userId}
+                    setUserId={setUserId}
                 />)}
                 {showEditModal && (
                     <EditModal
