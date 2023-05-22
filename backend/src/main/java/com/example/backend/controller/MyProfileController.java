@@ -38,16 +38,16 @@ public class MyProfileController {
         }
     }
 
-    @PutMapping("user/{id}")
-    public User updateUser(@RequestBody User newUser, @PathVariable Long id) {
-        return userRepository.findById(id)
-                .map(user -> {
-                    user.setUsername(newUser.getUsername());
-                    user.setFirstName(newUser.getFirstName());
-                    user.setLastName(newUser.getLastName());
-                    user.setPassword(passwordEncoder.encode(newUser.getPassword()));
-
-                    return userRepository.save(user);
-                }).orElseThrow(() -> new UserNotFoundException(id));
-    }
+//    @PutMapping("user/{id}")
+//    public User updateUser(@RequestBody User newUser, @PathVariable Long id) {
+//        return userRepository.findById(id)
+//                .map(user -> {
+//                    user.setUsername(newUser.getUsername());
+//                    user.setFirstName(newUser.getFirstName());
+//                    user.setLastName(newUser.getLastName());
+//                    user.setPassword(passwordEncoder.encode(newUser.getPassword()));
+//
+//                    return userRepository.save(user);
+//                }).orElseThrow(() -> new UserNotFoundException(id));
+//    }
 }
