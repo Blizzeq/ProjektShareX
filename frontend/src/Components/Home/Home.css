@@ -296,3 +296,8 @@
 #add-button-big img{
     width: 1.5rem;
 }
+
+.task-footer{
+    display: flex;
+    justify-content: center;
+}

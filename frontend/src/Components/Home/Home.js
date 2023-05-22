@@ -301,14 +301,12 @@ const Home = () => {
                                 </div>
                             ) : (
                                 <>
-                                    {/*<div className={'option-container'}>*/}
-                                    {/*    <button onClick={openUserModal} id={'add-button'}>*/}
-                                    {/*        Add user 3*/}
-                                    {/*    </button>*/}
-                                    {/*    <button onClick={() => handleDeleteProject(activeProject.id)} id={'delete-button'}>*/}
-                                    {/*        Delete project*/}
-                                    {/*    </button>*/}
-                                    {/*</div>*/}
+                                    <div className={'option-container'}>
+
+                                        <button onClick={() => handleDeleteProject(activeProject.id)} id={'delete-button'}>
+                                            Delete project
+                                        </button>
+                                    </div>
                                     <div className={'project-name'}>
                                         <h1>{activeProject.name}</h1>
                                     </div>
@@ -339,9 +337,14 @@ const Home = () => {
                                                                     >
                                                                         <h2>{task.name}</h2>
                                                                         <p>{task.description}</p>
-                                                                        <button onClick={(e) => {e.stopPropagation(); handleDeleteTask(task.id);}} className="delete-button">
-                                                                            <img src={Trash} alt={'Delete task'} className={'w-6'}/>
-                                                                        </button>
+                                                                        <div className={'task-footer gap-3'}>
+                                                                            <button onClick={(e) => {e.stopPropagation(); handleDeleteTask(task.id);}} className="delete-button">
+                                                                                <img src={Trash} alt={'Delete task'} className={'w-6'}/>
+                                                                            </button>
+                                                                            <button onClick={(e) => {e.stopPropagation(); openUserModal();}}>
+                                                                                <img src={adduser} alt={'Add user'} className={'w-6'}/>
+                                                                            </button>
+                                                                        </div>
                                                                     </div>
                                                                 ))}
                                                             <button onClick={openModal} id={'add-button'}>
