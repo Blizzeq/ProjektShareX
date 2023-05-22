@@ -2,8 +2,10 @@ import React, {useState} from 'react';
 import logo from "../../Assets/Home/Logo.svg";
 import profilelogo from "../../Assets/Home/Profile-Icon.svg";
 import {LinkContainer} from "react-router-bootstrap";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import './Header.css';
+import {clearCurrentUser} from "../../store/actions/user";
+import {useNavigate} from "react-router-dom";
 
 function Header(props) {
 
@@ -14,6 +16,14 @@ function Header(props) {
     function handleProfileClick() {
         setMenuVisible(!isMenuVisible);
     }
+
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    const logout = () => {
+        dispatch(clearCurrentUser());
+        navigate('/');
+    };
 
     return (
         <div className={'flex justify-between mx-6 h-20'}>
@@ -40,9 +50,9 @@ function Header(props) {
                         <LinkContainer to={'/profile'}>
                             <li>Profil użytkownika</li>
                         </LinkContainer>
-                        <LinkContainer to={'/'}>
-                            <li>Wyloguj</li>
-                        </LinkContainer>
+
+                        <li><button onClick={() => logout()}>Wyloguj</button></li>
+
                     </div>
                 </div>)}
             </div>
