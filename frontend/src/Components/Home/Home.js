@@ -97,7 +97,7 @@ const Home = () => {
 
     const handleUsersSubmit = async () => {
         try {
-            const { id: projectId } = activeProject;
+            const {id: projectId} = activeProject;
             const user = {
                 userId: userId,
             };
@@ -113,7 +113,7 @@ const Home = () => {
 
     const handleNewTaskSubmit = async () => {
         try {
-            const { id: projectId } = activeProject;
+            const {id: projectId} = activeProject;
             const task = {
                 name: newTaskTitle,
                 description: newTaskDescription,
@@ -127,7 +127,7 @@ const Home = () => {
                 id: response.data.id,
             };
 
-            const updatedProject = { ...activeProject };
+            const updatedProject = {...activeProject};
             updatedProject.tasks.push(updatedTask);
             setActiveProject(updatedProject);
 
@@ -139,7 +139,7 @@ const Home = () => {
 
     const handleNewStatusSubmit = async () => {
         try {
-            const { id: projectId } = activeProject;
+            const {id: projectId} = activeProject;
             const task = {
                 statusName: newStatus,
             };
@@ -151,7 +151,7 @@ const Home = () => {
                 id: response.data.id,
             };
 
-            const updatedProject = { ...activeProject };
+            const updatedProject = {...activeProject};
             updatedProject.tasks.push(updatedTask);
 
             ProjectService.getProjectById(projectId)
@@ -195,7 +195,7 @@ const Home = () => {
 
     const handleEditTaskSubmit = async (updatedTask) => {
         try {
-            const { id: projectId } = activeProject;
+            const {id: projectId} = activeProject;
             const taskId = updatedTask.id;
 
             const existingTask = activeProject.tasks.find((task) => task.id === updatedTask.id);
@@ -291,15 +291,20 @@ const Home = () => {
             <div className={'flex w-full'}>
                 <div className={'flex flex-col w-2/12 items-center gap-5 pt-8 kanban-menu h-screen'}>
                     {projectList.map((item) => (
-                        <div
-                            key={item.id}
-                            className={`${
-                                activeProject?.id === item.id ? 'bg-blue' : 'bg-gray-300'
-                            } flex gap-4 px-4 py-2 rounded cursor-pointer`}
-                            onClick={() => handleClick(item.id)}
-                        >
-                            <p>{item.name}</p>
-                        </div>
+                        <>
+                            <div
+                                key={item.id}
+                                className={`${
+                                    activeProject?.id === item.id ? 'bg-blue' : 'bg-gray-300'
+                                } flex gap-4 px-4 py-2 rounded cursor-pointer items-center justify-center`}
+                                onClick={() => handleClick(item.id)}
+                            >
+                                <p>{item.name}</p>
+                                <button onClick={() => handleDeleteProject(activeProject.id)} id={'delete-button-project'}>
+                                    <img src={Trash} alt={'Delete project'} className={'w-6'}/>
+                                </button>
+                            </div>
+                        </>
                     ))}
                     <div className={'bg-gray-300 flex gap-4 px-4 py-2 rounded cursor-pointer'}
                          onClick={handleAddProjectClick}>
@@ -321,12 +326,6 @@ const Home = () => {
                                 </div>
                             ) : (
                                 <>
-                                    <div className={'option-container'}>
-
-                                        <button onClick={() => handleDeleteProject(activeProject.id)} id={'delete-button'}>
-                                            Delete project
-                                        </button>
-                                    </div>
                                     <div className={'project-name'}>
                                         <h1>{activeProject.name}</h1>
                                     </div>
@@ -358,11 +357,19 @@ const Home = () => {
                                                                         <h2>{task.name}</h2>
                                                                         <p>{task.description}</p>
                                                                         <div className={'task-footer gap-3'}>
-                                                                            <button onClick={(e) => {e.stopPropagation(); handleDeleteTask(task.id);}} className="delete-button">
-                                                                                <img src={Trash} alt={'Delete task'} className={'w-6'}/>
+                                                                            <button onClick={(e) => {
+                                                                                e.stopPropagation();
+                                                                                handleDeleteTask(task.id);
+                                                                            }} className="delete-button">
+                                                                                <img src={Trash} alt={'Delete task'}
+                                                                                     className={'w-6'}/>
                                                                             </button>
-                                                                            <button onClick={(e) => {e.stopPropagation(); openUserModal();}}>
-                                                                                <img src={adduser} alt={'Add user'} className={'w-6'}/>
+                                                                            <button onClick={(e) => {
+                                                                                e.stopPropagation();
+                                                                                openUserModal();
+                                                                            }}>
+                                                                                <img src={adduser} alt={'Add user'}
+                                                                                     className={'w-6'}/>
                                                                             </button>
                                                                         </div>
                                                                     </div>
@@ -371,8 +378,10 @@ const Home = () => {
                                                                 <img src={addtask} alt={'Add task'} className={'w-6'}/>
                                                             </button>
                                                         </div>
-                                                        <button onClick={() => handleDeleteProject(activeProject.id)} id={'delete-button'}>
-                                                            <img src={deletetask} alt={'Delete project'} className={'w-6'}/>
+                                                        <button onClick={() => handleDeleteProject(activeProject.id)}
+                                                                id={'delete-button'}>
+                                                            <img src={deletetask} alt={'Delete project'}
+                                                                 className={'w-6'}/>
                                                         </button>
                                                     </div>
                                                 ))}

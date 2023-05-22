@@ -301,3 +301,12 @@
     display: flex;
     justify-content: center;
 }
+
+#delete-button-project{
+    border-radius: 5%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    color: white;
+}
