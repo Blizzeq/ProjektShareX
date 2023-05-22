@@ -3,6 +3,7 @@ package com.example.backend.model;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import net.minidev.json.annotate.JsonIgnore;
 import org.springframework.data.annotation.Transient;
 
 import javax.persistence.*;
@@ -36,6 +37,7 @@ public class User {
     @Column(name = "role", nullable = false)
     private Role role;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(name = "users_projects", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "project_id"))
     private Set<Project> projects = new HashSet<>();
