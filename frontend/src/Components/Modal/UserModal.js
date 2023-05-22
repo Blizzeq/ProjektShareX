@@ -9,7 +9,7 @@ const UserModal = ({ onClose, onSubmit, usersList, username, setUsername, userId
     return (
         <div className={'fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center'}>
             <div className={'bg-white p-8 rounded w-2/12'}>
-                <h2 className={'text-xl font-bold mb-4'}>Add users to project</h2>
+                <h2 className={'text-xl font-bold mb-4'}>Assign user to task</h2>
                 <form onSubmit={handleSubmit}>
                     <div className={'mt-4 flex justify-between'}>
                         <label htmlFor="project-status">Users list</label>

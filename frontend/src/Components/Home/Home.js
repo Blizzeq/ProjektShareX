@@ -38,6 +38,7 @@ const Home = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [activeProject, setActiveProject] = useState(null);
     const [users, setUsers] = useState([]);
+    const [assignedUsers, setAssignedUsers] = useState([]);
 
     const [items, setItems] = useState([
         {label: 'Home', icon: send},
@@ -75,6 +76,7 @@ const Home = () => {
     const [showEditModal, setShowEditModal] = useState(false);
     const [showUserModal, setUserModal] = useState(false);
     const [selectedTask, setSelectedTask] = useState(null);
+    const [selectedTaskId, setSelectedTaskId] = useState(null);
     const [username, setUsername] = useState(null);
     const [userId, setUserId] = useState(null)
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
@@ -106,6 +108,28 @@ const Home = () => {
             await UserService.addUserToProject(projectId, user.userId);
 
             closeUserModal();
+        } catch (error) {
+            console.error('Error while adding user to project:', error);
+        }
+    }
+
+    const handleUserToTaskSubmit = async () => {
+        try {
+            const {id: projectId} = activeProject;
+            const task = selectedTaskId;
+            const user = userId;
+
+            console.log(task + '---' + user);
+            await TaskService.assignTaskToUser(task, user);
+
+            ProjectService.getProjectById(projectId)
+                .then((response) => {
+                    setActiveProject(response.data);
+                    closeUserModal();
+                })
+                .catch((error) => {
+                    console.error('Error while fetching project details:', error);
+                });
         } catch (error) {
             console.error('Error while adding user to project:', error);
         }
@@ -180,7 +204,8 @@ const Home = () => {
         setShowEditModal(true);
     };
 
-    const openUserModal = () => {
+    const openUserModal = (taskId) => {
+        setSelectedTaskId(taskId)
         setUserModal(true);
     };
 
@@ -253,7 +278,7 @@ const Home = () => {
             await ProjectService.deleteProject(projectId);
             setProjectList(prevList => prevList.filter(project => project.id !== projectId));
 
-            ProjectService.getAllProjects().then((response) => {
+            ProjectService.getAllProjects(currentUser.id).then((response) => {
                 console.log(response.data);
                 setProjectList(response.data);
                 setActiveProject(response.data[0]);
@@ -265,7 +290,7 @@ const Home = () => {
     };
 
     useEffect(() => {
-        ProjectService.getAllProjects().then((response) => {
+        ProjectService.getAllProjects(currentUser.id).then((response) => {
             console.log(response.data);
             setProjectList(response.data);
             setActiveProject(response.data[0]);
@@ -280,6 +305,18 @@ const Home = () => {
                 })
                 .catch((error) => {
                     console.error('Error while fetching users:', error);
+                });
+        }
+    }, [activeProject]);
+
+    useEffect(() => {
+        if (activeProject) {
+            UserService.getAssignedUsers(activeProject.id)
+                .then((response) => {
+                    setAssignedUsers(response.data);
+                })
+                .catch((error) => {
+                    console.error('Error while fetching assigned users:', error);
                 });
         }
     }, [activeProject]);
@@ -356,6 +393,9 @@ const Home = () => {
                                                                     >
                                                                         <h2>{task.name}</h2>
                                                                         <p>{task.description}</p>
+                                                                        {task.assignedUserId !== null && (
+                                                                            <p>Assigned User : {task.assignedUserId}</p>
+                                                                        )}
                                                                         <div className={'task-footer gap-3'}>
                                                                             <button onClick={(e) => {
                                                                                 e.stopPropagation();
@@ -366,7 +406,7 @@ const Home = () => {
                                                                             </button>
                                                                             <button onClick={(e) => {
                                                                                 e.stopPropagation();
-                                                                                openUserModal();
+                                                                                openUserModal(task.id);
                                                                             }}>
                                                                                 <img src={adduser} alt={'Add user'}
                                                                                      className={'w-6'}/>
@@ -418,12 +458,13 @@ const Home = () => {
                 />}
                 {showUserModal && (<UserModal
                     onClose={closeUserModal}
-                    onSubmit={handleUsersSubmit}
-                    usersList={users}
+                    onSubmit={handleUserToTaskSubmit}
+                    usersList={assignedUsers}
                     username={username}
                     setUsername={setUsername}
                     userId={userId}
                     setUserId={setUserId}
+                    taskId={selectedTaskId}
                 />)}
                 {showEditModal && (
                     <EditModal

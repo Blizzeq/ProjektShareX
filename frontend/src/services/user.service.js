@@ -13,6 +13,10 @@ class UserService {
         return axios.get('http://localhost:8080/api/usersList/' + id + '/unassigned-users', {headers: authHeader()})
     }
 
+    getAssignedUsers(id) {
+        return axios.get('http://localhost:8080/api/usersList/' + id + '/assigned-users', {headers: authHeader()})
+    }
+
     addUserToProject(projectId, userId) {
         return axios.post('http://localhost:8080/api/usersList/add/' + projectId + '/' + userId, {headers: authHeader()})
     }

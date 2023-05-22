@@ -16,6 +16,10 @@ class TaskService {
     deleteTask(id) {
         return axios.delete( API_URL + '/' + id, {headers: authHeader()})
     }
+
+    assignTaskToUser(taskId, userId) {
+        return axios.post(API_URL + '/' + taskId + '/assign/' + userId, null, {headers: authHeader()})
+    }
 }
 
 export default new TaskService();
