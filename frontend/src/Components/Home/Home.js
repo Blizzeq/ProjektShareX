@@ -24,6 +24,12 @@ import TaskService from "../../services/task.service";
 import UserModal from "../Modal/UserModal";
 import UserService from "../../services/user.service";
 import AddStatusModal from "../Modal/AddStatusModal";
+import Trash from "../../Assets/Home/Trash.svg";
+import plusproject from "../../Assets/Home/Plus-project.svg";
+import adduser from "../../Assets/Home/UserPlus.svg";
+import addtask from "../../Assets/Home/PlusCircle.svg";
+import deletetask from "../../Assets/Home/MinusCircle.svg";
+import DeleteModal from "../Modal/DeleteModal";
 
 const Home = () => {
 
@@ -283,60 +289,86 @@ const Home = () => {
                     </div>
                 </div>
                 <div className={'flex flex-col w-10/12'}>
-                    <div className={'option-container'}>
-                        <button onClick={openStatusModal} id={'add-button'}>
-                            Add status
-                        </button>
-                        <button onClick={openModal} id={'add-button'}>
-                            Add task
-                        </button>
-                        <button onClick={openUserModal} id={'add-button'}>
-                            Add user
-                        </button>
-                        <button onClick={() => handleDeleteProject(activeProject.id)} id={'delete-button'}>
-                            Delete project
-                        </button>
-                    </div>
-                    <div className={'task-container'}>
-                        {activeProject && (
-                            <>
-                                {Object.entries(
-                                    activeProject.tasks.reduce((tasksByStatus, task) => {
-                                        if (!tasksByStatus[task.statusName]) {
-                                            tasksByStatus[task.statusName] = [];
-                                        }
-                                        tasksByStatus[task.statusName].push(task);
-                                        return tasksByStatus;
-                                    }, {})
-                                ).map(([statusName, tasks]) => (
-                                    <div key={statusName} className={'task-column'}>
-                                        <h1>{statusName}</h1>
-                                        <div className={'tasks'}>
-                                            {tasks
-                                                .filter((task) => task.name !== null && task.description !== null)
-                                                .map((task) => (
-                                                    <div
-                                                        className={'task'}
-                                                        key={task.id}
-                                                        onClick={(e) => {
-                                                            if (!e.target.classList.contains('delete-button')) {
-                                                                openEditModal(task);
-                                                            }
-                                                        }}
-                                                    >
-                                                        <h2>{task.name}</h2>
-                                                        <p>{task.description}</p>
-                                                        <button onClick={() => handleDeleteTask(task.id)} className="delete-button">
-                                                            Delete
+                    {projectList.length === 0 ? <div className={'no-projects'}>
+                        <p>No projects yet</p>
+                    </div> : (
+                        <>
+                            {activeProject && activeProject.tasks && activeProject.tasks.length === 0 ? (
+                                <div className="no-tasks">
+                                    <p>Add new status</p>
+                                    <button onClick={openStatusModal} id={'add-first-button'}>
+                                        <img src={plusproject} alt={'Add status'} className={'w-6'}/>
+                                    </button>
+                                </div>
+                            ) : (
+                                <>
+                                    <div className={'option-container'}>
+
+                                        <button onClick={() => handleDeleteProject(activeProject.id)} id={'delete-button'}>
+                                            Delete project
+                                        </button>
+                                    </div>
+                                    <div className={'project-name'}>
+                                        <h1>{activeProject.name}</h1>
+                                    </div>
+                                    <div className={'task-container'}>
+                                        {activeProject && (
+                                            <>
+                                                {Object.entries(activeProject.tasks.reduce((tasksByStatus, task) => {
+                                                    if (!tasksByStatus[task.statusName]) {
+                                                        tasksByStatus[task.statusName] = [];
+                                                    }
+                                                    tasksByStatus[task.statusName].push(task);
+                                                    return tasksByStatus;
+                                                }, {})).map(([statusName, tasks]) => (
+                                                    <div key={statusName} className={'task-column'}>
+                                                        <h1>{statusName}</h1>
+                                                        <div className={'tasks'}>
+                                                            {tasks
+                                                                .filter((task) => task.name !== null && task.description !== null)
+                                                                .map((task) => (
+                                                                    <div
+                                                                        className={'task'}
+                                                                        key={task.id}
+                                                                        onClick={(e) => {
+                                                                            if (!e.target.classList.contains('delete-button')) {
+                                                                                openEditModal(task);
+                                                                            }
+                                                                        }}
+                                                                    >
+                                                                        <h2>{task.name}</h2>
+                                                                        <p>{task.description}</p>
+                                                                        <div className={'task-footer gap-3'}>
+                                                                            <button onClick={(e) => {e.stopPropagation(); handleDeleteTask(task.id);}} className="delete-button">
+                                                                                <img src={Trash} alt={'Delete task'} className={'w-6'}/>
+                                                                            </button>
+                                                                            <button onClick={(e) => {e.stopPropagation(); openUserModal();}}>
+                                                                                <img src={adduser} alt={'Add user'} className={'w-6'}/>
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                ))}
+                                                            <button onClick={openModal} id={'add-button'}>
+                                                                <img src={addtask} alt={'Add task'} className={'w-6'}/>
+                                                            </button>
+                                                        </div>
+                                                        <button onClick={() => handleDeleteProject(activeProject.id)} id={'delete-button'}>
+                                                            <img src={deletetask} alt={'Delete project'} className={'w-6'}/>
                                                         </button>
                                                     </div>
                                                 ))}
+                                            </>
+                                        )}
+                                        <div className={'add-status'}>
+                                            <button onClick={openStatusModal} id={'add-button-big'}>
+                                                <img src={addtask} alt={'Add status'} className={'w-6'}/>
+                                            </button>
                                         </div>
                                     </div>
-                                ))}
-                            </>
-                        )}
-                    </div>
+                                </>
+                            )}
+                        </>
+                    )}
                 </div>
                 {isModalOpen && <Modal isOpen={isModalOpen} onClose={handleModalClose} onSubmit={handleModalSubmit}/>}
                 {showModal && <AddModal
@@ -373,15 +405,11 @@ const Home = () => {
                     />
                 )}
                 {showDeleteConfirmation && (
-                    <div className="delete-confirmation-modal">
-                        <div className="delete-confirmation-content">
-                            <h3>Are you sure you want to delete this project?</h3>
-                            <div className="delete-confirmation-buttons">
-                                <button onClick={() => handleDeleteConfirmation(activeProject.id)}>Delete Project</button>
-                                <button onClick={closeDeleteConfirmation}>Cancel</button>
-                            </div>
-                        </div>
-                    </div>
+                    <DeleteModal
+                        activeProject={activeProject}
+                        handleDeleteConfirmation={handleDeleteConfirmation}
+                        closeDeleteConfirmation={closeDeleteConfirmation}
+                    />
                 )}
             </div>
         </div>
