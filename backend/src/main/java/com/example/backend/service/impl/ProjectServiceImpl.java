@@ -3,19 +3,27 @@ package com.example.backend.service.impl;
 import com.example.backend.model.Project;
 import com.example.backend.repository.ProjectRepository;
 import com.example.backend.service.ProjectService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.Query;
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import javax.persistence.EntityManager;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository projectRepository;
 
-    public ProjectServiceImpl(ProjectRepository projectRepository) {
+    private final EntityManager entityManager;
+
+    public ProjectServiceImpl(ProjectRepository projectRepository, EntityManager entityManager) {
         this.projectRepository = projectRepository;
+        this.entityManager = entityManager;
     }
 
     @Override
@@ -36,7 +44,14 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void deleteProjectById(Long id) {
-        projectRepository.deleteById(id);
+    @Transactional
+    public void deleteProject(Long projectId) {
+        Project project = entityManager.find(Project.class, projectId);
+
+        Query query = entityManager.createNativeQuery("DELETE FROM users_projects WHERE project_id = :projectId");
+        query.setParameter("projectId", projectId);
+        query.executeUpdate();
+
+        entityManager.remove(project);
     }
 }
