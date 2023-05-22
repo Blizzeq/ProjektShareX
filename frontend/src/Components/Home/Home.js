@@ -339,7 +339,7 @@ const Home = () => {
                                                                     >
                                                                         <h2>{task.name}</h2>
                                                                         <p>{task.description}</p>
-                                                                        <button onClick={() => handleDeleteTask(task.id)} className="delete-button">
+                                                                        <button onClick={(e) => {e.stopPropagation(); handleDeleteTask(task.id);}} className="delete-button">
                                                                             <img src={Trash} alt={'Delete task'} className={'w-6'}/>
                                                                         </button>
                                                                     </div>
