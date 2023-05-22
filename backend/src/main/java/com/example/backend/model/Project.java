@@ -1,5 +1,6 @@
 package com.example.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,6 +27,7 @@ public class Project {
     @Column(name = "created_by", nullable = false)
     private Long createdById;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by", referencedColumnName = "id", insertable = false, updatable = false)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
@@ -34,6 +36,7 @@ public class Project {
     @Column(name = "create_time", nullable = false)
     private LocalDateTime createdTime;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "projects")
     private Set<User> users = new HashSet<>();
 
