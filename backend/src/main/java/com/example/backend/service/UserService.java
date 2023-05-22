@@ -18,6 +18,8 @@ public interface UserService {
 
     List<String> usernameList(Long userId);
 
+    List<User> findUnassignedUsers(Long projectId);
+
     User getLoggedInUser(Authentication authentication);
 
 }

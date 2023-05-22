@@ -7,8 +7,9 @@ import com.example.backend.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -20,9 +21,12 @@ public class UserServiceImpl implements UserService {
 
     private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    private final EntityManager entityManager;
+
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, EntityManager entityManager) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.entityManager = entityManager;
     }
 
     @Override
@@ -53,6 +57,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<String> usernameList(Long userId) {
         return userRepository.findUsernameList(userId);
+    }
+
+    @Override
+    public List<User> findUnassignedUsers(Long projectId) {
+        String query = "SELECT * FROM users WHERE id NOT IN " +
+                "(SELECT user_id FROM users_projects WHERE project_id = :projectId)";
+
+        Query nativeQuery = entityManager.createNativeQuery(query, User.class);
+        nativeQuery.setParameter("projectId", projectId);
+
+        return nativeQuery.getResultList();
     }
 
     @Override
