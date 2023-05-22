@@ -1,6 +1,6 @@
 import React from "react";
 
-const UserModal = ({ onClose, onSubmit, usersList, username, setUsername }) => {
+const UserModal = ({ onClose, onSubmit, usersList, username, setUsername, userId, setUserId }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         onSubmit();
@@ -13,10 +13,10 @@ const UserModal = ({ onClose, onSubmit, usersList, username, setUsername }) => {
                 <form onSubmit={handleSubmit}>
                     <div className={'mt-4 flex justify-between'}>
                         <label htmlFor="project-status">Users list</label>
-                        <select id={'project-name'} value={username} onChange={(e) => setUsername(e.target.value)}>
+                        <select id={'project-name'} value={userId} onChange={e => setUserId(e.target.value)}>
                             {usersList.map((user) => (
-                                <option key={user} value={user}>
-                                    {user}
+                                <option key={user.id} value={user.id}>
+                                    {user.username}
                                 </option>
                             ))}
                         </select>
