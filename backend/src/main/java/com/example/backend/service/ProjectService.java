@@ -12,6 +12,8 @@ public interface ProjectService {
 
     List<Project> findProjectsOfUser(Long userId);
 
+    List<Project> findProjectsByUser(Long userId);
+
     Optional<Project> findProjectById(Long id);
 
     @Transactional

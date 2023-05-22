@@ -1,12 +1,11 @@
 package com.example.backend.service.impl;
 
 import com.example.backend.model.Project;
+import com.example.backend.model.User;
 import com.example.backend.repository.ProjectRepository;
 import com.example.backend.service.ProjectService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -36,6 +35,17 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public List<Project> findProjectsOfUser(Long id) {
         return projectRepository.findByCreatedById(id);
+    }
+
+    @Override
+    public List<Project> findProjectsByUser(Long userId) {
+        String query = "SELECT * FROM projects WHERE id IN " +
+                "(SELECT project_id FROM users_projects WHERE user_id = :userId)";
+
+        Query nativeQuery = entityManager.createNativeQuery(query, Project.class);
+        nativeQuery.setParameter("userId", userId);
+
+        return nativeQuery.getResultList();
     }
 
     @Override

@@ -3,9 +3,11 @@ package com.example.backend.controller;
 import com.example.backend.exception.TaskNotFoundException;
 import com.example.backend.model.Project;
 import com.example.backend.model.Task;
+import com.example.backend.model.User;
 import com.example.backend.repository.TaskRepository;
 import com.example.backend.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -92,6 +94,26 @@ public class TaskController {
         taskService.deleteTaskByStatusNameAndProject(projectId, statusName);
 
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("{taskId}/assign/{userId}")
+    public ResponseEntity<String> assignTaskToUser(@PathVariable("taskId") Long taskId, @PathVariable("userId") Long userId) {
+        try {
+            Optional<Task> taskOptional = taskService.findTaskById(taskId);
+            User user = userService.findById(userId);
+
+            if (taskOptional.isEmpty() || user == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            Task task = taskOptional.get();
+            task.setAssignedUserId(userId);
+            taskService.saveTask(task);
+
+            return ResponseEntity.ok("Task assigned to user successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while assigning task to user: " + e.getMessage());
+        }
     }
 
 }

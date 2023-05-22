@@ -71,6 +71,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> findAssignedUsers(Long projectId) {
+        String query = "SELECT * FROM users WHERE id IN " +
+                "(SELECT user_id FROM users_projects WHERE project_id = :projectId)";
+
+        Query nativeQuery = entityManager.createNativeQuery(query, User.class);
+        nativeQuery.setParameter("projectId", projectId);
+
+        return nativeQuery.getResultList();
+    }
+
+    @Override
     public User getLoggedInUser(Authentication authentication) {
         String loggedInUsername = authentication.getName();
         Optional<User> optionalUser = userRepository.findByUsername(loggedInUsername);

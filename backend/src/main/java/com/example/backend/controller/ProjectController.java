@@ -33,9 +33,9 @@ public class ProjectController {
         this.userService = userService;
     }
 
-    @GetMapping("all")
-    public ResponseEntity<?> getAllProjectsOfUser(@AuthenticationPrincipal UserPrinciple userPrinciple) {
-        return ResponseEntity.ok(projectService.findProjectsOfUser(userPrinciple.getId()));
+    @GetMapping("all/{userId}")
+    public ResponseEntity<?> getAllProjectsOfUser(@PathVariable Long userId) {
+        return ResponseEntity.ok(projectService.findProjectsByUser(userId));
     }
 
     @GetMapping("{id}")

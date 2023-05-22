@@ -28,11 +28,6 @@ public class Task {
     @Column(name = "status_name")
     private String statusName;
 
-//    @JsonIgnore
-//    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-//    @JoinColumn(name = "status_id", referencedColumnName = "id", insertable = false, updatable = false)
-//    private Status status;
-
     @Column(name = "project_id")
     private Long projectId;
 
