@@ -1,16 +1,20 @@
 package com.example.backend.controller;
 
 import com.example.backend.model.Project;
+import com.example.backend.model.User;
 import com.example.backend.security.UserPrinciple;
 import com.example.backend.service.ProjectService;
 import com.example.backend.service.TaskService;
+import com.example.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("api/project")
@@ -20,10 +24,13 @@ public class ProjectController {
 
     private final TaskService taskService;
 
+    private final UserService userService;
+
     @Autowired
-    public ProjectController(ProjectService projectService, TaskService taskService) {
+    public ProjectController(ProjectService projectService, TaskService taskService, UserService userService) {
         this.projectService = projectService;
         this.taskService = taskService;
+        this.userService = userService;
     }
 
     @GetMapping("all")
@@ -43,14 +50,21 @@ public class ProjectController {
 
     @PostMapping("create")
     public ResponseEntity<?> createProject(@RequestBody Project project) {
-        return new ResponseEntity<>(projectService.saveProject(project), HttpStatus.CREATED);
+        User user = userService.findById(project.getCreatedById());
+
+        project.getUsers().add(user);
+        user.getProjects().add(project);
+
+        Project savedProject = projectService.saveProject(project);
+
+        return new ResponseEntity<>(savedProject, HttpStatus.CREATED);
     }
 
     @DeleteMapping("{projectId}")
     public ResponseEntity<?> deleteProject(@PathVariable Long projectId) {
         taskService.deleteTaskByProjectId(projectId);
 
-        projectService.deleteProjectById(projectId);
+        projectService.deleteProject(projectId);
 
         return ResponseEntity.ok().build();
     }
