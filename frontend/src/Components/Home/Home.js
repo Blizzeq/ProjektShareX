@@ -25,11 +25,13 @@ import UserModal from "../Modal/UserModal";
 import UserService from "../../services/user.service";
 import AddStatusModal from "../Modal/AddStatusModal";
 import Trash from "../../Assets/Home/Trash.svg";
+import TrashRed from "../../Assets/Home/TrashRed.svg";
 import plusproject from "../../Assets/Home/Plus-project.svg";
 import adduser from "../../Assets/Home/UserPlus.svg";
 import addtask from "../../Assets/Home/PlusCircle.svg";
 import deletetask from "../../Assets/Home/MinusCircle.svg";
 import DeleteModal from "../Modal/DeleteModal";
+import addusergreen from "../../Assets/Home/UserPlusGreen.svg";
 
 const Home = () => {
 
@@ -289,6 +291,7 @@ const Home = () => {
         }
     };
 
+
     useEffect(() => {
         ProjectService.getAllProjects(currentUser.id).then((response) => {
             console.log(response.data);
@@ -332,13 +335,16 @@ const Home = () => {
                             <div
                                 key={item.id}
                                 className={`${
-                                    activeProject?.id === item.id ? 'bg-blue' : 'bg-gray-300'
+                                    activeProject?.id === item.id ? 'bg-blue text-white' : 'bg-gray-300 text-darkblue'
                                 } flex gap-4 px-4 py-2 rounded cursor-pointer items-center justify-center`}
                                 onClick={() => handleClick(item.id)}
                             >
                                 <p>{item.name}</p>
                                 <button onClick={() => handleDeleteProject(activeProject.id)} id={'delete-button-project'}>
-                                    <img src={Trash} alt={'Delete project'} className={'w-6'}/>
+                                    <img src={`${activeProject.id === item.id ? TrashRed : Trash}`} alt={'Delete project'} className={'w-6'}/>
+                                </button>
+                                <button onClick={() => openUserModal(activeProject.id)} id={'delete-button-project'}>
+                                    <img src={`${activeProject.id === item.id ? addusergreen : adduser}`} alt={'adduser'} className={'w-6'}/>
                                 </button>
                             </div>
                         </>
@@ -418,11 +424,10 @@ const Home = () => {
                                                                 <img src={addtask} alt={'Add task'} className={'w-6'}/>
                                                             </button>
                                                         </div>
-                                                        <button onClick={() => handleDeleteProject(activeProject.id)}
-                                                                id={'delete-button'}>
-                                                            <img src={deletetask} alt={'Delete project'}
-                                                                 className={'w-6'}/>
+                                                        <button onClick={() => handleDeleteProject(activeProject.id)} id={'delete-button'}>
+                                                            <img src={deletetask} alt={'Delete status'} className={'w-6'}/>
                                                         </button>
+
                                                     </div>
                                                 ))}
                                             </>

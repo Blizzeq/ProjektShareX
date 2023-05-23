@@ -26,7 +26,7 @@ const UserModal = ({ onClose, onSubmit, usersList, username, setUsername, userId
                             Cancel
                         </button>
                         <button type="submit" className={'bg-blue text-white ml-4 px-4 py-2 rounded'}>
-                            Create
+                            Add
                         </button>
                     </div>
                 </form>
