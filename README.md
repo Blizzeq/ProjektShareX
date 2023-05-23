@@ -4,9 +4,6 @@
 ![stars](https://img.shields.io/github/stars/BartoszOkon/lab_specjalistyczne_gr4?style=social&label=Stars)
 ![forks](https://img.shields.io/github/forks/BartoszOkon/lab_specjalistyczne_gr4?style=social&label=Forks)
 
-## ​Live Demo
-https://blizzeq.github.io/ProjektShareX/
-
 ## ​Spis treści
 
 - [O projekcie](https://github.com/BartoszOkon/lab_specjalistyczne_gr4#about-the-project)
