@@ -32,6 +32,7 @@ import addtask from "../../Assets/Home/PlusCircle.svg";
 import deletetask from "../../Assets/Home/MinusCircle.svg";
 import DeleteModal from "../Modal/DeleteModal";
 import addusergreen from "../../Assets/Home/UserPlusGreen.svg";
+import ProjectUsersModal from "../Modal/ProjectUsersModal";
 
 const Home = () => {
 
@@ -77,6 +78,7 @@ const Home = () => {
     const [newTaskStatus, setNewTaskStatus] = useState('To Do');
     const [showEditModal, setShowEditModal] = useState(false);
     const [showUserModal, setUserModal] = useState(false);
+    const [showProjectUsersModal, setProjectUsersModal] = useState(false);
     const [selectedTask, setSelectedTask] = useState(null);
     const [selectedTaskId, setSelectedTaskId] = useState(null);
     const [username, setUsername] = useState(null);
@@ -155,9 +157,15 @@ const Home = () => {
 
             const updatedProject = {...activeProject};
             updatedProject.tasks.push(updatedTask);
-            setActiveProject(updatedProject);
 
-            closeModal();
+            ProjectService.getProjectById(projectId)
+                .then((response) => {
+                    setActiveProject(response.data);
+                    closeModal();
+                })
+                .catch((error) => {
+                    console.error('Error while fetching project details:', error);
+                });
         } catch (error) {
             console.error('Error while adding task:', error);
         }
@@ -204,6 +212,14 @@ const Home = () => {
     const openEditModal = (task) => {
         setSelectedTask(task);
         setShowEditModal(true);
+    };
+
+    const openProjectUsersModal = () => {
+        setProjectUsersModal(true);
+    };
+
+    const closeProjectUsersModal = () => {
+        setProjectUsersModal(false);
     };
 
     const openUserModal = (taskId) => {
@@ -343,7 +359,7 @@ const Home = () => {
                                 <button onClick={() => handleDeleteProject(activeProject.id)} id={'delete-button-project'}>
                                     <img src={`${activeProject.id === item.id ? TrashRed : Trash}`} alt={'Delete project'} className={'w-6'}/>
                                 </button>
-                                <button onClick={() => openUserModal(activeProject.id)} id={'delete-button-project'}>
+                                <button onClick={() => openProjectUsersModal()} id={'delete-button-project'}>
                                     <img src={`${activeProject.id === item.id ? addusergreen : adduser}`} alt={'adduser'} className={'w-6'}/>
                                 </button>
                             </div>
@@ -467,6 +483,14 @@ const Home = () => {
                     usersList={assignedUsers}
                     username={username}
                     setUsername={setUsername}
+                    userId={userId}
+                    setUserId={setUserId}
+                    taskId={selectedTaskId}
+                />)}
+                {showProjectUsersModal && (<ProjectUsersModal
+                    onClose={closeProjectUsersModal}
+                    onSubmit={handleUsersSubmit}
+                    usersList={users}
                     userId={userId}
                     setUserId={setUserId}
                     taskId={selectedTaskId}
