@@ -18,7 +18,7 @@ class UserService {
     }
 
     addUserToProject(projectId, userId) {
-        return axios.post('http://localhost:8080/api/usersList/add/' + projectId + '/' + userId, {headers: authHeader()})
+        return axios.post('http://localhost:8080/api/usersList/add/' + projectId + '/' + userId, {}, {headers: authHeader()})
     }
 }
 
