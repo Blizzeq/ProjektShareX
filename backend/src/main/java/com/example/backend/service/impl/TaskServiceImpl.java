@@ -5,6 +5,7 @@ import com.example.backend.repository.TaskRepository;
 import com.example.backend.service.TaskService;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,8 +14,11 @@ public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
 
-    public TaskServiceImpl(TaskRepository taskRepository) {
+    private final EntityManager entityManager;
+
+    public TaskServiceImpl(TaskRepository taskRepository, EntityManager entityManager) {
         this.taskRepository = taskRepository;
+        this.entityManager = entityManager;
     }
 
     @Override
@@ -25,6 +29,16 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public void deleteTaskByStatusNameAndProject(Long projectId, String statusName) {
         taskRepository.deleteByProjectIdAndStatusName(projectId, statusName);
+    }
+
+    @Override
+    public void setStatusNameByProjectAndStatusName(Long projectId, String oldStatusName, String newStatusName) {
+        taskRepository.setStatusForTask(projectId, oldStatusName, newStatusName);
+    }
+
+    @Override
+    public void setStatusNameByTaskId(Long taskId, String newStatusName) {
+        taskRepository.setStatusByTaskId(taskId, newStatusName);
     }
 
     @Override

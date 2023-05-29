@@ -2,6 +2,7 @@ package com.example.backend.repository;
 
 import com.example.backend.model.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -23,4 +24,13 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     @Query("SELECT DISTINCT t.statusName FROM Task t WHERE t.project.id = :projectId")
     List<String> findUniqueStatusesByProjectId(@Param("projectId") Long projectId);
 
+    @Transactional
+    @Modifying
+    @Query("UPDATE Task SET statusName = :newStatusName WHERE projectId = :projectId AND statusName = :oldStatusName")
+    void setStatusForTask(Long projectId, String oldStatusName, String newStatusName);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE Task SET statusName = :newStatusName WHERE id = :taskId")
+    void setStatusByTaskId(Long taskId, String newStatusName);
 }

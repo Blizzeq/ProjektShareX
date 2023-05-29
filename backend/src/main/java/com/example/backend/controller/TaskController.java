@@ -96,6 +96,20 @@ public class TaskController {
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping("updateStatus/{projectId}/{oldStatusName}/{newStatusName}")
+    public ResponseEntity<?> updateStatus(@PathVariable Long projectId, @PathVariable String oldStatusName, @PathVariable String newStatusName) {
+        taskService.setStatusNameByProjectAndStatusName(projectId, oldStatusName, newStatusName);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("updateStatusByTaskId/{taskId}/{newStatusName}")
+    public ResponseEntity<?> updateStatusByTaskId(@PathVariable Long taskId, @PathVariable String newStatusName) {
+        taskService.setStatusNameByTaskId(taskId, newStatusName);
+
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("{taskId}/assign/{userId}")
     public ResponseEntity<String> assignTaskToUser(@PathVariable("taskId") Long taskId, @PathVariable("userId") Long userId) {
         try {
@@ -115,5 +129,4 @@ public class TaskController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while assigning task to user: " + e.getMessage());
         }
     }
-
 }
