@@ -52,21 +52,6 @@ const AddModal = ({ onClose, onSubmit, statusList, projectName, setProjectName, 
                             <div className="error">{formik.errors.description}</div>
                         ) : null}
                     </div>
-                    <div className={'mt-4 flex justify-between'}>
-                        <label htmlFor="project-status">Task Status</label>
-                        <select
-                            id={'project-name'}
-                            name="task-status"
-                            value={projectStatus}
-                            onChange={(e) => setProjectStatus(e.target.value)}
-                        >
-                            {statusList.map((status) => (
-                                <option key={status} value={status}>
-                                    {status}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
                     <div className={'flex justify-end mt-8'}>
                         <button type="button" className={'text-darkblue bg-gray-200 rounded px-4 py-2'} onClick={onClose}>
                             Cancel
