@@ -20,6 +20,18 @@ class TaskService {
     assignTaskToUser(taskId, userId) {
         return axios.post(API_URL + '/' + taskId + '/assign/' + userId, null, {headers: authHeader()})
     }
+
+    deleteStatus(projectId, statusName) {
+        return axios.delete(API_URL + '/deleteStatus/' + projectId + '/' + statusName, {headers: authHeader()})
+    }
+
+    updateStatus(projectId, oldStatusName, newStatusName) {
+        return axios.put(API_URL + '/updateStatus/' + projectId + '/' + oldStatusName + '/' + newStatusName, {},{headers: authHeader()});
+    }
+
+    updateStatusOfTask(taskId, newStatusName) {
+        return axios.put(API_URL + 'updateStatusByTaskId/' + taskId + '/' + newStatusName, {}, {headers: authHeader()})
+    }
 }
 
 export default new TaskService();
