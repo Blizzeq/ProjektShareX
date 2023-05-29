@@ -33,6 +33,7 @@ import deletetask from "../../Assets/Home/MinusCircle.svg";
 import DeleteModal from "../Modal/DeleteModal";
 import addusergreen from "../../Assets/Home/UserPlusGreen.svg";
 import ProjectUsersModal from "../Modal/ProjectUsersModal";
+import EditStatusModal from "../Modal/EditStatusModal";
 
 const Home = () => {
 
@@ -77,15 +78,19 @@ const Home = () => {
     const [newTaskDescription, setNewTaskDescription] = useState('');
     const [newTaskStatus, setNewTaskStatus] = useState('To Do');
     const [showEditModal, setShowEditModal] = useState(false);
+    const [showEditStatusModal, setShowEditStatusModal] = useState(false);
     const [showUserModal, setUserModal] = useState(false);
     const [showProjectUsersModal, setProjectUsersModal] = useState(false);
     const [selectedTask, setSelectedTask] = useState(null);
+    const [selectedStatus, setSelectedStatus] = useState(null);
+    const [newStatusName, setNewStatusName] = useState(null);
     const [selectedTaskId, setSelectedTaskId] = useState(null);
     const [username, setUsername] = useState(null);
     const [userId, setUserId] = useState(null)
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
-    const openModal = () => {
+    const openModal = (statusName) => {
+        setNewTaskStatus(statusName);
         setShowModal(true);
     };
 
@@ -104,14 +109,19 @@ const Home = () => {
     const handleUsersSubmit = async () => {
         try {
             const {id: projectId} = activeProject;
-            const user = {
-                userId: userId,
-            };
+            const user = userId;
 
-            console.log(projectId + '---' + user.userId)
-            await UserService.addUserToProject(projectId, user.userId);
+            console.log(projectId + '---' + user)
+            await UserService.addUserToProject(projectId, user);
 
-            closeUserModal();
+            ProjectService.getProjectById(projectId)
+                .then((response) => {
+                    setActiveProject(response.data);
+                    closeProjectUsersModal();
+                })
+                .catch((error) => {
+                    console.error('Error while fetching project details:', error);
+                });
         } catch (error) {
             console.error('Error while adding user to project:', error);
         }
@@ -214,6 +224,11 @@ const Home = () => {
         setShowEditModal(true);
     };
 
+    const openEditStatusModal = (statusName) => {
+        setSelectedStatus(statusName);
+        setShowEditStatusModal(true);
+    };
+
     const openProjectUsersModal = () => {
         setProjectUsersModal(true);
     };
@@ -235,6 +250,33 @@ const Home = () => {
         setSelectedTask(null);
         setShowEditModal(false);
     };
+
+    const closeEditStatusModal = () => {
+        setSelectedTask(null);
+        setShowEditStatusModal(false);
+    };
+
+    const handleEditStatusSubmit = async () => {
+        try {
+            const {id: projectId} = activeProject;
+            const newStatus = newStatusName;
+
+            console.log(projectId + '---', selectedStatus, '---', newStatus)
+
+            await TaskService.updateStatus(projectId, selectedStatus, newStatus);
+
+            ProjectService.getProjectById(projectId)
+                .then((response) => {
+                    setActiveProject(response.data);
+                    closeEditStatusModal();
+                })
+                .catch((error) => {
+                    console.error('Error while fetching project details:', error);
+                });
+        } catch (error) {
+            console.error('Error while updating status:', error);
+        }
+    }
 
     const handleEditTaskSubmit = async (updatedTask) => {
         try {
@@ -286,6 +328,26 @@ const Home = () => {
         }
     };
 
+    const handleDeleteStatus = async (statusName) => {
+        try {
+            const {id: projectId} = activeProject;
+
+            console.log(projectId + '---' + statusName);
+
+            await TaskService.deleteStatus(projectId, statusName);
+
+            ProjectService.getProjectById(projectId)
+                .then((response) => {
+                    setActiveProject(response.data);
+                })
+                .catch((error) => {
+                    console.error('Error while fetching project details:', error);
+                });
+        } catch (error) {
+            console.error('Error while deleting status:', error);
+        }
+    }
+
     const handleDeleteProject = (projectId) => {
         openDeleteConfirmation();
         setActiveProject(projectList.find(project => project.id === projectId));
@@ -332,6 +394,7 @@ const Home = () => {
         if (activeProject) {
             UserService.getAssignedUsers(activeProject.id)
                 .then((response) => {
+                    console.log(response.data)
                     setAssignedUsers(response.data);
                 })
                 .catch((error) => {
@@ -416,7 +479,7 @@ const Home = () => {
                                                                         <h2>{task.name}</h2>
                                                                         <p>{task.description}</p>
                                                                         {task.assignedUserId !== null && (
-                                                                            <p>Assigned User : {task.assignedUserId}</p>
+                                                                            <p>Assigned User : {assignedUsers.find(user => user.id === task.assignedUserId)?.username}</p>
                                                                         )}
                                                                         <div className={'task-footer gap-3'}>
                                                                             <button onClick={(e) => {
@@ -436,14 +499,16 @@ const Home = () => {
                                                                         </div>
                                                                     </div>
                                                                 ))}
-                                                            <button onClick={openModal} id={'add-button'}>
+                                                            <button onClick={() => openModal(statusName)} id={'add-button'}>
                                                                 <img src={addtask} alt={'Add task'} className={'w-6'}/>
                                                             </button>
                                                         </div>
-                                                        <button onClick={() => handleDeleteProject(activeProject.id)} id={'delete-button'}>
+                                                        <button onClick={() => handleDeleteStatus(statusName)} id={'delete-button'}>
                                                             <img src={deletetask} alt={'Delete status'} className={'w-6'}/>
                                                         </button>
-
+                                                        <button onClick={() => openEditStatusModal(statusName)} id={'delete-button'}>
+                                                            <img src={addtask} alt={'Delete status'} className={'w-6'}/>
+                                                        </button>
                                                     </div>
                                                 ))}
                                             </>
@@ -502,6 +567,14 @@ const Home = () => {
                         task={selectedTask}
                         setTask={setSelectedTask}
                         statusList={Array.from(new Set(activeProject.tasks.map((task) => task.statusName)))}
+                    />
+                )}
+                {showEditStatusModal && (
+                    <EditStatusModal
+                        onClose={closeEditStatusModal}
+                        onSubmit={handleEditStatusSubmit}
+                        status={newStatusName}
+                        setNewStatus={setNewStatusName}
                     />
                 )}
                 {showDeleteConfirmation && (
