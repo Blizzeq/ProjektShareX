@@ -48,8 +48,14 @@ const addProjectModalSchema = yup.object().shape({
 });
 
 const addModalSchema = Yup.object({
-    title: Yup.string().required('Task Title is required'),
-    description: Yup.string().required('Task Description is required'),
+    title: Yup.string().required('Task Title is required').max(20, 'Task Title must be at most 20 characters'),
+    description: Yup.string().required('Task Description is required').max(40, 'Task Description must be at most 40 characters'),
 })
 
-export  {loginSchema, registerSchema, resetPasswordSchema, profileSchema, editModalSchema, addProjectModalSchema, addModalSchema};
+const newStatusSchema = yup.object().shape({
+    title: yup.string().required('Status Title is required').max(20, 'Status Title must be at most 20 characters'),
+});
+
+
+
+export  {loginSchema, registerSchema, resetPasswordSchema, profileSchema, editModalSchema, addProjectModalSchema, addModalSchema, newStatusSchema};
