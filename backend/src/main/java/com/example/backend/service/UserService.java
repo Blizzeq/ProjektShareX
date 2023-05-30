@@ -20,6 +20,8 @@ public interface UserService {
 
     List<User> findUnassignedUsers(Long projectId);
 
+    List<User> findUsersAssignedToTask(Long taskId);
+
     List<User> findAssignedUsers(Long projectId);
 
     User getLoggedInUser(Authentication authentication);

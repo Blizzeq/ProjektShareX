@@ -1,6 +1,7 @@
 package com.example.backend.service;
 
 import com.example.backend.model.Task;
+import com.example.backend.model.User;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -21,6 +22,10 @@ public interface TaskService {
     Optional<Task> findTaskById(Long id);
 
     List<Task> findTasksByProjectAndStatus(Long projectId, String statusName);
+
+    List<Task> findTasks(Long projectId);
+
+    List<User> findTasksByProject(Long taskId);
 
     Task saveTask(Task task);
 }

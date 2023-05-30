@@ -21,6 +21,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     List<Task> findByProjectIdAndStatusName(Long projectId, String statusName);
 
+    List<Task> findByProjectIdAndNameIsNotNull(Long projectId);
+
     @Query("SELECT DISTINCT t.statusName FROM Task t WHERE t.project.id = :projectId")
     List<String> findUniqueStatusesByProjectId(@Param("projectId") Long projectId);
 

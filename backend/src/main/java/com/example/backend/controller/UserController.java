@@ -43,6 +43,11 @@ public class UserController {
         return ResponseEntity.ok(assignedUsers);
     }
 
+    @GetMapping("assignedToTask/{taskId}")
+    public ResponseEntity<?> getUsersListAssignedToTask(@PathVariable Long taskId) {
+        return ResponseEntity.ok(userService.findUsersAssignedToTask(taskId));
+    }
+
     @PostMapping("add/{projectId}/{userId}")
     public ResponseEntity<String> addUserToProject(@PathVariable Long userId, @PathVariable Long projectId) {
         User user = userService.findById(userId);

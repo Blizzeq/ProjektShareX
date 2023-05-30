@@ -1,6 +1,7 @@
 package com.example.backend.service;
 
 import com.example.backend.model.Project;
+import com.example.backend.model.User;
 
 import javax.transaction.Transactional;
 import java.util.List;

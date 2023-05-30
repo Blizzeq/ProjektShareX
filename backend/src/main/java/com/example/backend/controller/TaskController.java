@@ -38,6 +38,16 @@ public class TaskController {
         return ResponseEntity.ok(taskService.findTasksByProjectAndStatus(projectId, statusName));
     }
 
+    @GetMapping("byProject/{taskId}")
+    public ResponseEntity<?> getAllTasksByProject(@PathVariable Long taskId) {
+        return ResponseEntity.ok(taskService.findTasksByProject(taskId));
+    }
+
+    @GetMapping("byProjectTasks/{projectId}")
+    public ResponseEntity<?> getAllTasks(@PathVariable Long projectId) {
+        return ResponseEntity.ok(taskService.findTasks(projectId));
+    }
+
     @PostMapping("add/{projectId}")
     public ResponseEntity<?> addTaskToStatus(@RequestBody Task task, @PathVariable Long projectId) {
         task.setProjectId(projectId);
@@ -122,6 +132,9 @@ public class TaskController {
 
             Task task = taskOptional.get();
             task.setAssignedUserId(userId);
+            task.getAssignedUsers().add(user);
+            user.getAssignedTasks().add(task);
+
             taskService.saveTask(task);
 
             return ResponseEntity.ok("Task assigned to user successfully.");

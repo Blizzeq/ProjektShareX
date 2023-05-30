@@ -29,6 +29,14 @@ class TaskService {
         return axios.put(API_URL + '/updateStatus/' + projectId + '/' + oldStatusName + '/' + newStatusName, {},{headers: authHeader()});
     }
 
+    getTasksByProject(projectId) {
+        return axios.get(API_URL + '/byProject/' + projectId, {headers: authHeader()})
+    }
+
+    getTasks(projectId) {
+        return axios.get(API_URL + '/byProjectTasks/' + projectId, {headers: authHeader()})
+    }
+
     updateStatusOfTask(taskId, newStatusName) {
         return axios.put(API_URL + 'updateStatusByTaskId/' + taskId + '/' + newStatusName, {}, {headers: authHeader()})
     }

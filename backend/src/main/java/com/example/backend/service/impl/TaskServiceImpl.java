@@ -1,11 +1,13 @@
 package com.example.backend.service.impl;
 
 import com.example.backend.model.Task;
+import com.example.backend.model.User;
 import com.example.backend.repository.TaskRepository;
 import com.example.backend.service.TaskService;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,6 +56,21 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<Task> findTasksByProjectAndStatus(Long projectId, String statusName) {
         return taskRepository.findByProjectIdAndStatusName(projectId, statusName);
+    }
+
+    @Override
+    public List<Task> findTasks(Long projectId) {
+        return taskRepository.findByProjectIdAndNameIsNotNull(projectId);
+    }
+
+    @Override
+    public List<User> findTasksByProject(Long taskId) {
+        String query = "SELECT * FROM users WHERE id IN " + "(SELECT user_id FROM users_assign_tasks WHERE task_id = :taskId)";
+
+        Query nativeQuery = entityManager.createNativeQuery(query, User.class);
+        nativeQuery.setParameter("taskId", taskId);
+
+        return nativeQuery.getResultList();
     }
 
     @Override

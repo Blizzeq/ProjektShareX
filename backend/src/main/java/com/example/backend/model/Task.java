@@ -8,7 +8,9 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -44,4 +46,7 @@ public class Task {
     @JoinColumn(name = "assigned_user_id", referencedColumnName = "id", insertable = false, updatable = false)
     private User assignedTo;
 
+    @JsonIgnore
+    @ManyToMany(mappedBy = "assignedTasks")
+    private Set<User> assignedUsers = new HashSet<>();
 }

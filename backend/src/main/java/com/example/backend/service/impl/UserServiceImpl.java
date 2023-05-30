@@ -71,6 +71,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> findUsersAssignedToTask(Long taskId) {
+        String query = "SELECT * FROM users WHERE id IN " +
+                "(SELECT user_id FROM users_assign_tasks WHERE task_id = :taskId)";
+
+        Query nativeQuery = entityManager.createNativeQuery(query, User.class);
+        nativeQuery.setParameter("taskId", taskId);
+
+        return nativeQuery.getResultList();
+    }
+
+    @Override
     public List<User> findAssignedUsers(Long projectId) {
         String query = "SELECT * FROM users WHERE id IN " +
                 "(SELECT user_id FROM users_projects WHERE project_id = :projectId)";

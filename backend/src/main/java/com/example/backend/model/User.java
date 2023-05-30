@@ -1,5 +1,6 @@
 package com.example.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -38,9 +39,15 @@ public class User {
     private Role role;
 
     @JsonIgnore
+    @JsonIgnoreProperties({"hibernateLazyInitializer"})
     @ManyToMany
     @JoinTable(name = "users_projects", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "project_id"))
     private Set<Project> projects = new HashSet<>();
+
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(name = "users_assign_tasks", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "task_id"))
+    private Set<Task> assignedTasks  = new HashSet<>();
 
     @Transient
     private String token;

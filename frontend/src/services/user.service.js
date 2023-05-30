@@ -20,6 +20,10 @@ class UserService {
     addUserToProject(projectId, userId) {
         return axios.post('http://localhost:8080/api/usersList/add/' + projectId + '/' + userId, {}, {headers: authHeader()})
     }
+
+    getUsersListAssignedToTask(taskId) {
+        return axios.get('http://localhost:8080/api/usersList/assignedToTask/' + taskId, {headers: authHeader()})
+    }
 }
 
 export default new UserService();
