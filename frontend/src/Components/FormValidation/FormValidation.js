@@ -42,9 +42,8 @@ const editModalSchema = yup.object().shape({
     description: yup.string().required('Description is required').max(100, 'Description must be at most 100 characters'),
 })
 
-const addModalSchema = yup.object().shape({
-    title: yup.string().required('Title is required').max(20, 'Title must be at most 20 characters'),
-    description: yup.string().required('Description is required').max(100, 'Description must be at most 100 characters'),
-})
+const addProjectModalSchema = yup.object().shape({
+    projectName: yup.string().required('Project Name is required').max(12, 'Project Name must be at most 12 characters'),
+});
 
-export  {loginSchema, registerSchema, resetPasswordSchema, profileSchema, editModalSchema, addModalSchema};
+export  {loginSchema, registerSchema, resetPasswordSchema, profileSchema, editModalSchema, addProjectModalSchema};
