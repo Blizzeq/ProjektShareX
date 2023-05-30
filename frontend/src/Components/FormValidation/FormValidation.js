@@ -1,4 +1,5 @@
 import * as yup from 'yup';
+import * as Yup from "yup";
 
 const loginSchema = yup.object().shape({
     // email: yup.string().email("Please provide a valid email.").required("Email is required."),
@@ -43,7 +44,12 @@ const editModalSchema = yup.object().shape({
 })
 
 const addProjectModalSchema = yup.object().shape({
-    projectName: yup.string().required('Project Name is required').max(12, 'Project Name must be at most 12 characters'),
+    projectName: yup.string().required('Project Name is required').max(20, 'Project Name must be at most 20 characters'),
 });
 
-export  {loginSchema, registerSchema, resetPasswordSchema, profileSchema, editModalSchema, addProjectModalSchema};
+const addModalSchema = Yup.object({
+    title: Yup.string().required('Task Title is required'),
+    description: Yup.string().required('Task Description is required'),
+})
+
+export  {loginSchema, registerSchema, resetPasswordSchema, profileSchema, editModalSchema, addProjectModalSchema, addModalSchema};
