@@ -56,6 +56,10 @@ const newStatusSchema = yup.object().shape({
     title: yup.string().required('Status Title is required').max(20, 'Status Title must be at most 20 characters'),
 });
 
+const editStatusModalSchema = yup.object().shape({
+    status: yup.string().required('Status Title is required').max(20, 'Status Title must be at most 20 characters'),
+});
 
 
-export  {loginSchema, registerSchema, resetPasswordSchema, profileSchema, editModalSchema, addProjectModalSchema, addModalSchema, newStatusSchema};
+
+export  {loginSchema, registerSchema, resetPasswordSchema, profileSchema, editModalSchema, addProjectModalSchema, addModalSchema, newStatusSchema, editStatusModalSchema};
