@@ -34,6 +34,7 @@ import DeleteModal from "../Modal/DeleteModal";
 import addusergreen from "../../Assets/Home/UserPlusGreen.svg";
 import ProjectUsersModal from "../Modal/ProjectUsersModal";
 import EditStatusModal from "../Modal/EditStatusModal";
+import EditButton from "../../Assets/Home/EditButton.svg";
 
 const Home = () => {
 
@@ -503,12 +504,14 @@ const Home = () => {
                                                                 <img src={addtask} alt={'Add task'} className={'w-6'}/>
                                                             </button>
                                                         </div>
-                                                        <button onClick={() => handleDeleteStatus(statusName)} id={'delete-button'}>
-                                                            <img src={deletetask} alt={'Delete status'} className={'w-6'}/>
-                                                        </button>
-                                                        <button onClick={() => openEditStatusModal(statusName)} id={'delete-button'}>
-                                                            <img src={addtask} alt={'Delete status'} className={'w-6'}/>
-                                                        </button>
+                                                        <div className={'status-edit-container'}>
+                                                            <button onClick={() => handleDeleteStatus(statusName)} id={'delete-button'}>
+                                                                <img src={deletetask} alt={'Edit status'} className={'w-6'}/>
+                                                            </button>
+                                                            <button onClick={() => openEditStatusModal(statusName)} id={'edit-button'}>
+                                                                <img src={EditButton} alt={'Delete status'} className={'w-6'}/>
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 ))}
                                             </>

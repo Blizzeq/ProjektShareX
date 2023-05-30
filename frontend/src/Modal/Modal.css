@@ -14,3 +14,9 @@
     border: 1px solid #3A57E8;
     outline: none;
 }
+
+.error-container{
+    display: flex;
+    justify-content: end;
+    margin-top: 0.5rem;
+}

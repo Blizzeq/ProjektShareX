@@ -1,4 +1,5 @@
 import * as yup from 'yup';
+import * as Yup from "yup";
 
 const loginSchema = yup.object().shape({
     // email: yup.string().email("Please provide a valid email.").required("Email is required."),
@@ -42,9 +43,23 @@ const editModalSchema = yup.object().shape({
     description: yup.string().required('Description is required').max(100, 'Description must be at most 100 characters'),
 })
 
-const addModalSchema = yup.object().shape({
-    title: yup.string().required('Title is required').max(20, 'Title must be at most 20 characters'),
-    description: yup.string().required('Description is required').max(100, 'Description must be at most 100 characters'),
+const addProjectModalSchema = yup.object().shape({
+    projectName: yup.string().required('Project Name is required').max(20, 'Project Name must be at most 20 characters'),
+});
+
+const addModalSchema = Yup.object({
+    title: Yup.string().required('Task Title is required').max(20, 'Task Title must be at most 20 characters'),
+    description: Yup.string().required('Task Description is required').max(40, 'Task Description must be at most 40 characters'),
 })
 
-export  {loginSchema, registerSchema, resetPasswordSchema, profileSchema, editModalSchema, addModalSchema};
+const newStatusSchema = yup.object().shape({
+    title: yup.string().required('Status Title is required').max(20, 'Status Title must be at most 20 characters'),
+});
+
+const editStatusModalSchema = yup.object().shape({
+    status: yup.string().required('Status Title is required').max(20, 'Status Title must be at most 20 characters'),
+});
+
+
+
+export  {loginSchema, registerSchema, resetPasswordSchema, profileSchema, editModalSchema, addProjectModalSchema, addModalSchema, newStatusSchema, editStatusModalSchema};
