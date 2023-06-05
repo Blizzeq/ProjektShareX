@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User saveUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(user.getPassword());
         user.setRole(Role.USER);
         user.setCreatedTime(LocalDateTime.now());
         user.setActive(true);
@@ -82,12 +82,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findAssignedUsers(Long projectId) {
+    public List<User> findAssignedUsers(Long projectId, Long currentUserId) {
         String query = "SELECT * FROM users WHERE id IN " +
-                "(SELECT user_id FROM users_projects WHERE project_id = :projectId)";
+                "(SELECT user_id FROM users_projects WHERE project_id = :projectId) AND id <> :currentUserId";
 
         Query nativeQuery = entityManager.createNativeQuery(query, User.class);
         nativeQuery.setParameter("projectId", projectId);
+        nativeQuery.setParameter("currentUserId", currentUserId);
+
+        return nativeQuery.getResultList();
+    }
+
+    @Override
+    public List<User> findUnAssignedUsersToTask(Long projectId, Long taskId) {
+        String query = "SELECT * FROM users WHERE id IN " +
+                "(SELECT user_id FROM users_projects WHERE project_id = :projectId) AND id NOT IN (SELECT user_id FROM users_assign_tasks WHERE task_id = :taskId)";
+
+        Query nativeQuery = entityManager.createNativeQuery(query, User.class);
+        nativeQuery.setParameter("projectId", projectId);
+        nativeQuery.setParameter("taskId", taskId);
 
         return nativeQuery.getResultList();
     }

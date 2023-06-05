@@ -36,11 +36,18 @@ public class UserController {
         return ResponseEntity.ok(unassignedUsers);
     }
 
-    @GetMapping("{projectId}/assigned-users")
-    public ResponseEntity<List<User>> getAssignedUsers(@PathVariable Long projectId) {
-        List<User> assignedUsers = userService.findAssignedUsers(projectId);
+    @GetMapping("{projectId}/assigned-users/{userId}")
+    public ResponseEntity<List<User>> getAssignedUsers(@PathVariable Long projectId, @PathVariable Long userId) {
+        List<User> assignedUsers = userService.findAssignedUsers(projectId, userId);
 
         return ResponseEntity.ok(assignedUsers);
+    }
+
+    @GetMapping("{projectId}/{taskId}/unassigned-users-to-task")
+    public ResponseEntity<List<User>> getUnAssignedUsersToTask(@PathVariable Long projectId, @PathVariable Long taskId) {
+        List<User> unassignedUsers = userService.findUnAssignedUsersToTask(projectId, taskId);
+
+        return ResponseEntity.ok(unassignedUsers);
     }
 
     @GetMapping("assignedToTask/{taskId}")

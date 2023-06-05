@@ -22,7 +22,9 @@ public interface UserService {
 
     List<User> findUsersAssignedToTask(Long taskId);
 
-    List<User> findAssignedUsers(Long projectId);
+    List<User> findAssignedUsers(Long projectId, Long currentUserId);
+
+    List<User> findUnAssignedUsersToTask(Long projectId, Long taskId);
 
     User getLoggedInUser(Authentication authentication);
 
