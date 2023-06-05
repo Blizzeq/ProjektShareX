@@ -35,6 +35,7 @@ import addusergreen from "../../Assets/Home/UserPlusGreen.svg";
 import ProjectUsersModal from "../Modal/ProjectUsersModal";
 import EditStatusModal from "../Modal/EditStatusModal";
 import EditButton from "../../Assets/Home/EditButton.svg";
+import NotificationService from "../../services/notification.service";
 
 const Home = () => {
 
@@ -44,6 +45,7 @@ const Home = () => {
     const [activeProject, setActiveProject] = useState(null);
     const [users, setUsers] = useState([]);
     const [assignedUsers, setAssignedUsers] = useState([]);
+    const [assignedUsersAll, setAssignedUsersAll] = useState([]);
 
     const [items, setItems] = useState([
         {label: 'Home', icon: send},
@@ -239,7 +241,15 @@ const Home = () => {
     };
 
     const openUserModal = (taskId) => {
-        setSelectedTaskId(taskId)
+        setSelectedTaskId(taskId);
+        UserService.getUnAssignedUsersToTask(activeProject.id, taskId)
+            .then((response) => {
+                console.log(response.data)
+                setAssignedUsers(response.data);
+            })
+            .catch((error) => {
+                console.error('Error while fetching assigned users:', error);
+            });
         setUserModal(true);
     };
 
@@ -356,7 +366,21 @@ const Home = () => {
 
     const handleDeleteConfirmation = async (projectId) => {
         try {
+            const assignedUsers = assignedUsersAll.map((user) => user.id);
+
+            for (const userId1 of assignedUsers) {
+                const notification = {
+                    description: 'Projekt o nazwie: ' + activeProject.name + ' został usunięty przez: ' + currentUser.username,
+                    userId: userId1,
+                };
+
+                console.log(notification)
+
+                await NotificationService.createNotification(notification);
+            }
+
             await ProjectService.deleteProject(projectId);
+
             setProjectList(prevList => prevList.filter(project => project.id !== projectId));
 
             ProjectService.getAllProjects(currentUser.id).then((response) => {
@@ -393,14 +417,50 @@ const Home = () => {
 
     useEffect(() => {
         if (activeProject) {
-            UserService.getAssignedUsers(activeProject.id)
+            UserService.getAssignedUsers(activeProject.id, currentUser.id)
                 .then((response) => {
-                    console.log(response.data)
-                    setAssignedUsers(response.data);
+                    setAssignedUsersAll(response.data);
                 })
                 .catch((error) => {
-                    console.error('Error while fetching assigned users:', error);
+                    console.error('Error while fetching users:', error);
                 });
+        }
+    }, [activeProject]);
+
+    const [assignedUsersByTask, setAssignedUsersByTask] = useState({});
+
+    const getAssignedUsersToTask = async (taskId) => {
+        try {
+            const response = await TaskService.getAssignedUsersToTask(taskId);
+            const assignedUsers = response.data;
+            return assignedUsers.map((user) => user.username);
+        } catch (error) {
+            console.error('Error while getting assigned users to task:', error);
+            return [];
+        }
+    };
+
+    const fetchTasksForActiveProject = async () => {
+        try {
+            const response = await TaskService.getTasks(activeProject.id);
+            const tasks = response.data;
+
+            const assignedUsersByTask = {};
+
+            for (const task of tasks) {
+                const assignedUsers = await getAssignedUsersToTask(task.id);
+                assignedUsersByTask[task.id] = assignedUsers;
+            }
+
+            setAssignedUsersByTask(assignedUsersByTask);
+        } catch (error) {
+            console.error('Error while fetching tasks for active project:', error);
+        }
+    };
+
+    useEffect(() => {
+        if (activeProject) {
+            fetchTasksForActiveProject();
         }
     }, [activeProject]);
 
@@ -479,9 +539,20 @@ const Home = () => {
                                                                     >
                                                                         <h2>{task.name}</h2>
                                                                         <p>{task.description}</p>
-                                                                        {task.assignedUserId !== null && (
-                                                                            <p>Assigned User : {assignedUsers.find(user => user.id === task.assignedUserId)?.username}</p>
-                                                                        )}
+                                                                        <p>
+                                                                            {assignedUsersByTask[task.id] && assignedUsersByTask[task.id].length > 0 ? (
+                                                                                <>
+                                                                                    <p>Assigned users:</p>
+                                                                                    <ul>
+                                                                                        {assignedUsersByTask[task.id].map((username) => (
+                                                                                            <li key={username}>{username}</li>
+                                                                                        ))}
+                                                                                    </ul>
+                                                                                </>
+                                                                            ) : (
+                                                                                null
+                                                                            )}
+                                                                        </p>
                                                                         <div className={'task-footer gap-3'}>
                                                                             <button onClick={(e) => {
                                                                                 e.stopPropagation();
