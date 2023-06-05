@@ -14,6 +14,7 @@ const EditStatusModal = ({status, setNewStatus, onClose, onSubmit}) => {
         validationSchema: editStatusModalSchema,
         onSubmit: (values) => {
             handleSubmit(values);
+            setNewStatus(null);
         },
     });
 
