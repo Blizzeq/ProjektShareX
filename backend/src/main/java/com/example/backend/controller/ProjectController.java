@@ -62,6 +62,7 @@ public class ProjectController {
 
     @DeleteMapping("{projectId}")
     public ResponseEntity<?> deleteProject(@PathVariable Long projectId) {
+        projectService.deleteAssignedUsersToTasksInProject(projectId);
         taskService.deleteTaskByProjectId(projectId);
 
         projectService.deleteProject(projectId);

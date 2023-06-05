@@ -1,7 +1,6 @@
 package com.example.backend.service.impl;
 
 import com.example.backend.model.Project;
-import com.example.backend.model.User;
 import com.example.backend.repository.ProjectRepository;
 import com.example.backend.service.ProjectService;
 import org.springframework.stereotype.Service;
@@ -63,5 +62,13 @@ public class ProjectServiceImpl implements ProjectService {
         query.executeUpdate();
 
         entityManager.remove(project);
+    }
+
+    @Override
+    @Transactional
+    public void deleteAssignedUsersToTasksInProject(Long projectId) {
+        Query query = entityManager.createNativeQuery("DELETE FROM users_assign_tasks WHERE task_id IN (SELECT id from tasks WHERE project_id = :projectId)");
+        query.setParameter("projectId", projectId);
+        query.executeUpdate();
     }
 }

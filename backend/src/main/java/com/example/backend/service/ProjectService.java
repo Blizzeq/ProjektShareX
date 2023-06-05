@@ -19,4 +19,7 @@ public interface ProjectService {
 
     @Transactional
     void deleteProject(Long projectId);
+
+    @Transactional
+    void deleteAssignedUsersToTasksInProject(Long projectId);
 }
