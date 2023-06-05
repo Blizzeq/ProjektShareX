@@ -13,8 +13,12 @@ class UserService {
         return axios.get('http://localhost:8080/api/usersList/' + id + '/unassigned-users', {headers: authHeader()})
     }
 
-    getAssignedUsers(id) {
-        return axios.get('http://localhost:8080/api/usersList/' + id + '/assigned-users', {headers: authHeader()})
+    getAssignedUsers(projectId, userId) {
+        return axios.get('http://localhost:8080/api/usersList/' + projectId + '/assigned-users/' + userId, {headers: authHeader()})
+    }
+
+    getUnAssignedUsersToTask(projectId, taskId) {
+        return axios.get('http://localhost:8080/api/usersList/' + projectId + '/' + taskId + '/unassigned-users-to-task', {headers: authHeader()})
     }
 
     addUserToProject(projectId, userId) {
