@@ -340,6 +340,7 @@ const Home = () => {
     };
 
     const handleDeleteStatus = async (statusName) => {
+
         try {
             const {id: projectId} = activeProject;
 

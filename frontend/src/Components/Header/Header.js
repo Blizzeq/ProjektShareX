@@ -6,6 +6,7 @@ import {useDispatch, useSelector} from "react-redux";
 import './Header.css';
 import {clearCurrentUser} from "../../store/actions/user";
 import {useNavigate} from "react-router-dom";
+import messageIcon from "../../Assets/Home/Envelope.svg"
 
 function Header(props) {
 
@@ -41,6 +42,12 @@ function Header(props) {
             </div>
             <div className={'flex gap-5 justify-evenly user-home items-center relative'}>
                 <img src={profilelogo} alt={'profilelogo'} id={'profile-logo'} onClick={handleProfileClick}/>
+                <LinkContainer to={"/messages"}>
+                    <div>
+                        <img src={messageIcon} alt={'usermessage'} id={'user-message'}/>
+                        <p id={'user-mesasges-counter'}>2</p>
+                    </div>
+                </LinkContainer>
                 <div className={''}>
                     <p className={'text-darkblue'}>{currentUser?.firstName + ' ' + currentUser?.lastName}</p>
                     <p className={'text-gray2'}>{currentUser?.email}</p>
@@ -51,7 +58,9 @@ function Header(props) {
                             <li>Profil użytkownika</li>
                         </LinkContainer>
 
-                        <li><button onClick={() => logout()}>Wyloguj</button></li>
+                        <li>
+                            <button onClick={() => logout()}>Wyloguj</button>
+                        </li>
 
                     </div>
                 </div>)}

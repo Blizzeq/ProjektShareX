@@ -9,6 +9,7 @@ import {AuthGuard} from "./guards/auth.guard";
 import {Role} from "./models/role";
 import {NotFound} from "./Components/NotFound/NotFound";
 import {Unauthorized} from "./Components/Unauthorized/Unauthorized";
+import UserMessages from "./Components/Messages/UserMessages";
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
 
             <Route path="/home" element={<Home />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/messages" element={<UserMessages />} />
 
             <Route path="/404" element={<NotFound />}/>
             <Route path="/401" element={<Unauthorized />}/>
