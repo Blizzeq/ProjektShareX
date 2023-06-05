@@ -12,17 +12,12 @@
     cursor: pointer;
 }
 
-#user-message{
-    margin-right: 3vmax;
-}
 
 #user-mesasges-counter{
     display: flex;
-    position: absolute;
-    left: 22.5%;
-    top: 20%;
     background-color: red;
     color: white;
     border-radius: 100%;
-    padding: 1px 6px;
+    justify-content: center;
+    align-items: center;
 }

@@ -339,329 +339,342 @@ const Home = () => {
         }
     };
 
-    const handleDeleteStatus = async (statusName) => {
 
-        try {
-            const {id: projectId} = activeProject;
 
-            console.log(projectId + '---' + statusName);
+        const handleDeleteStatus = async (statusName) => {
+            try {
+                const { id: projectId } = activeProject;
 
-            await TaskService.deleteStatus(projectId, statusName);
+                console.log(projectId + '---' + statusName);
 
-            ProjectService.getProjectById(projectId)
-                .then((response) => {
-                    setActiveProject(response.data);
-                })
-                .catch((error) => {
-                    console.error('Error while fetching project details:', error);
-                });
-        } catch (error) {
-            console.error('Error while deleting status:', error);
-        }
-    }
+                const confirmDelete = window.confirm('Czy na pewno chcesz usunąć ten status?');
 
-    const handleDeleteProject = (projectId) => {
-        openDeleteConfirmation();
-        setActiveProject(projectList.find(project => project.id === projectId));
-    };
+                if (confirmDelete) {
+                    await TaskService.deleteStatus(projectId, statusName);
 
-    const handleDeleteConfirmation = async (projectId) => {
-        try {
-            const assignedUsers = assignedUsersAll.map((user) => user.id);
-
-            for (const userId1 of assignedUsers) {
-                const notification = {
-                    description: 'Projekt o nazwie: ' + activeProject.name + ' został usunięty przez: ' + currentUser.username,
-                    userId: userId1,
-                };
-
-                console.log(notification)
-
-                await NotificationService.createNotification(notification);
+                    ProjectService.getProjectById(projectId)
+                        .then((response) => {
+                            setActiveProject(response.data);
+                        })
+                        .catch((error) => {
+                            console.error('Error while fetching project details:', error);
+                        });
+                }
+            } catch (error) {
+                console.error('Error while deleting status:', error);
             }
+        };
 
-            await ProjectService.deleteProject(projectId);
 
-            setProjectList(prevList => prevList.filter(project => project.id !== projectId));
+        const handleDeleteProject = (projectId) => {
+    openDeleteConfirmation();
+    setActiveProject(projectList.find(project => project.id === projectId));
+};
 
-            ProjectService.getAllProjects(currentUser.id).then((response) => {
-                console.log(response.data);
-                setProjectList(response.data);
-                setActiveProject(response.data[0]);
-                closeDeleteConfirmation();
-            });
-        } catch (error) {
-            console.error('Error while deleting project:', error);
+const handleDeleteConfirmation = async (projectId) => {
+    try {
+        const assignedUsers = assignedUsersAll.map((user) => user.id);
+
+        for (const userId1 of assignedUsers) {
+            const notification = {
+                description: 'Projekt o nazwie: ' + activeProject.name + ' został usunięty przez: ' + currentUser.username,
+                userId: userId1,
+            };
+
+            console.log(notification)
+
+            await NotificationService.createNotification(notification);
         }
-    };
 
+        await ProjectService.deleteProject(projectId);
 
-    useEffect(() => {
+        setProjectList(prevList => prevList.filter(project => project.id !== projectId));
+
         ProjectService.getAllProjects(currentUser.id).then((response) => {
             console.log(response.data);
             setProjectList(response.data);
             setActiveProject(response.data[0]);
+            closeDeleteConfirmation();
         });
-    }, []);
+    } catch (error) {
+        console.error('Error while deleting project:', error);
+    }
+};
 
-    useEffect(() => {
-        if (activeProject) {
-            UserService.getAllUsers(activeProject.id)
-                .then((response) => {
-                    setUsers(response.data);
-                })
-                .catch((error) => {
-                    console.error('Error while fetching users:', error);
-                });
+
+useEffect(() => {
+    ProjectService.getAllProjects(currentUser.id).then((response) => {
+        console.log(response.data);
+        setProjectList(response.data);
+        setActiveProject(response.data[0]);
+    });
+}, []);
+
+useEffect(() => {
+    if (activeProject) {
+        UserService.getAllUsers(activeProject.id)
+            .then((response) => {
+                setUsers(response.data);
+            })
+            .catch((error) => {
+                console.error('Error while fetching users:', error);
+            });
+    }
+}, [activeProject]);
+
+useEffect(() => {
+    if (activeProject) {
+        UserService.getAssignedUsers(activeProject.id, currentUser.id)
+            .then((response) => {
+                setAssignedUsersAll(response.data);
+            })
+            .catch((error) => {
+                console.error('Error while fetching users:', error);
+            });
+    }
+}, [activeProject]);
+
+const [assignedUsersByTask, setAssignedUsersByTask] = useState({});
+
+const getAssignedUsersToTask = async (taskId) => {
+    try {
+        const response = await TaskService.getAssignedUsersToTask(taskId);
+        const assignedUsers = response.data;
+        return assignedUsers.map((user) => user.username);
+    } catch (error) {
+        console.error('Error while getting assigned users to task:', error);
+        return [];
+    }
+};
+
+const fetchTasksForActiveProject = async () => {
+    try {
+        const response = await TaskService.getTasks(activeProject.id);
+        const tasks = response.data;
+
+        const assignedUsersByTask = {};
+
+        for (const task of tasks) {
+            const assignedUsers = await getAssignedUsersToTask(task.id);
+            assignedUsersByTask[task.id] = assignedUsers;
         }
-    }, [activeProject]);
 
-    useEffect(() => {
-        if (activeProject) {
-            UserService.getAssignedUsers(activeProject.id, currentUser.id)
-                .then((response) => {
-                    setAssignedUsersAll(response.data);
-                })
-                .catch((error) => {
-                    console.error('Error while fetching users:', error);
-                });
-        }
-    }, [activeProject]);
+        setAssignedUsersByTask(assignedUsersByTask);
+    } catch (error) {
+        console.error('Error while fetching tasks for active project:', error);
+    }
+};
 
-    const [assignedUsersByTask, setAssignedUsersByTask] = useState({});
+useEffect(() => {
+    if (activeProject) {
+        fetchTasksForActiveProject();
+    }
+}, [activeProject]);
 
-    const getAssignedUsersToTask = async (taskId) => {
-        try {
-            const response = await TaskService.getAssignedUsersToTask(taskId);
-            const assignedUsers = response.data;
-            return assignedUsers.map((user) => user.username);
-        } catch (error) {
-            console.error('Error while getting assigned users to task:', error);
-            return [];
-        }
-    };
-
-    const fetchTasksForActiveProject = async () => {
-        try {
-            const response = await TaskService.getTasks(activeProject.id);
-            const tasks = response.data;
-
-            const assignedUsersByTask = {};
-
-            for (const task of tasks) {
-                const assignedUsers = await getAssignedUsersToTask(task.id);
-                assignedUsersByTask[task.id] = assignedUsers;
-            }
-
-            setAssignedUsersByTask(assignedUsersByTask);
-        } catch (error) {
-            console.error('Error while fetching tasks for active project:', error);
-        }
-    };
-
-    useEffect(() => {
-        if (activeProject) {
-            fetchTasksForActiveProject();
-        }
-    }, [activeProject]);
-
-    return (
-        <div className={'home Regular right'}>
-            <Header/>
-            <hr></hr>
-            <div className={'flex w-full'}>
-                <div className={'flex flex-col w-2/12 items-center gap-5 pt-8 kanban-menu h-screen'}>
-                    {projectList.map((item) => (
-                        <>
-                            <div
-                                key={item.id}
-                                className={`${
-                                    activeProject?.id === item.id ? 'bg-blue text-white' : 'bg-gray-300 text-darkblue'
-                                } flex gap-4 px-4 py-2 rounded cursor-pointer items-center justify-center`}
-                                onClick={() => handleClick(item.id)}
-                            >
-                                <p>{item.name}</p>
-                                <button onClick={() => handleDeleteProject(activeProject.id)} id={'delete-button-project'}>
-                                    <img src={`${activeProject.id === item.id ? TrashRed : Trash}`} alt={'Delete project'} className={'w-6'}/>
-                                </button>
-                                <button onClick={() => openProjectUsersModal()} id={'delete-button-project'}>
-                                    <img src={`${activeProject.id === item.id ? addusergreen : adduser}`} alt={'adduser'} className={'w-6'}/>
+return (
+    <div className={'home Regular right'}>
+        <Header/>
+        <hr></hr>
+        <div className={'flex w-full'}>
+            <div className={'flex flex-col w-2/12 items-center gap-5 pt-8 kanban-menu h-screen'}>
+                {projectList.map((item) => (
+                    <>
+                        <div
+                            key={item.id}
+                            className={`${
+                                activeProject?.id === item.id ? 'bg-blue text-white' : 'bg-gray-300 text-darkblue'
+                            } flex gap-4 px-4 py-2 rounded cursor-pointer items-center justify-center`}
+                            onClick={() => handleClick(item.id)}
+                        >
+                            <p>{item.name}</p>
+                            <button onClick={() => handleDeleteProject(activeProject.id)} id={'delete-button-project'}>
+                                <img src={`${activeProject.id === item.id ? TrashRed : Trash}`} alt={'Delete project'}
+                                     className={'w-6'}/>
+                            </button>
+                            <button onClick={() => openProjectUsersModal()} id={'delete-button-project'}>
+                                <img src={`${activeProject.id === item.id ? addusergreen : adduser}`} alt={'adduser'}
+                                     className={'w-6'}/>
+                            </button>
+                        </div>
+                    </>
+                ))}
+                <div className={'bg-gray-300 flex gap-4 px-4 py-2 rounded cursor-pointer'}
+                     onClick={handleAddProjectClick}>
+                    <img src={dashboard} alt={'Add project'} className={'w-6'}/>
+                    <p>Add project</p>
+                </div>
+            </div>
+            <div className={'flex flex-col w-10/12'}>
+                {projectList.length === 0 ? <div className={'no-projects'}>
+                    <p>No projects yet</p>
+                </div> : (
+                    <>
+                        {activeProject && activeProject.tasks && activeProject.tasks.length === 0 ? (
+                            <div className="no-tasks">
+                                <p>Add new status</p>
+                                <button onClick={openStatusModal} id={'add-first-button'}>
+                                    <img src={plusproject} alt={'Add status'} className={'w-6'}/>
                                 </button>
                             </div>
-                        </>
-                    ))}
-                    <div className={'bg-gray-300 flex gap-4 px-4 py-2 rounded cursor-pointer'}
-                         onClick={handleAddProjectClick}>
-                        <img src={dashboard} alt={'Add project'} className={'w-6'}/>
-                        <p>Add project</p>
-                    </div>
-                </div>
-                <div className={'flex flex-col w-10/12'}>
-                    {projectList.length === 0 ? <div className={'no-projects'}>
-                        <p>No projects yet</p>
-                    </div> : (
-                        <>
-                            {activeProject && activeProject.tasks && activeProject.tasks.length === 0 ? (
-                                <div className="no-tasks">
-                                    <p>Add new status</p>
-                                    <button onClick={openStatusModal} id={'add-first-button'}>
-                                        <img src={plusproject} alt={'Add status'} className={'w-6'}/>
-                                    </button>
+                        ) : (
+                            <>
+                                <div className={'project-name'}>
+                                    <h1>{activeProject.name}</h1>
                                 </div>
-                            ) : (
-                                <>
-                                    <div className={'project-name'}>
-                                        <h1>{activeProject.name}</h1>
-                                    </div>
-                                    <div className={'task-container'}>
-                                        {activeProject && (
-                                            <>
-                                                {Object.entries(activeProject.tasks.reduce((tasksByStatus, task) => {
-                                                    if (!tasksByStatus[task.statusName]) {
-                                                        tasksByStatus[task.statusName] = [];
-                                                    }
-                                                    tasksByStatus[task.statusName].push(task);
-                                                    return tasksByStatus;
-                                                }, {})).map(([statusName, tasks]) => (
-                                                    <div key={statusName} className={'task-column'}>
-                                                        <h1>{statusName}</h1>
-                                                        <div className={'tasks'}>
-                                                            {tasks
-                                                                .filter((task) => task.name !== null && task.description !== null)
-                                                                .map((task) => (
-                                                                    <div
-                                                                        className={'task'}
-                                                                        key={task.id}
-                                                                        onClick={(e) => {
-                                                                            if (!e.target.classList.contains('delete-button')) {
-                                                                                openEditModal(task);
-                                                                            }
-                                                                        }}
-                                                                    >
-                                                                        <h2>{task.name}</h2>
-                                                                        <p>{task.description}</p>
-                                                                        <p>
-                                                                            {assignedUsersByTask[task.id] && assignedUsersByTask[task.id].length > 0 ? (
-                                                                                <>
-                                                                                    <p>Assigned users:</p>
-                                                                                    <ul>
-                                                                                        {assignedUsersByTask[task.id].map((username) => (
-                                                                                            <li key={username}>{username}</li>
-                                                                                        ))}
-                                                                                    </ul>
-                                                                                </>
-                                                                            ) : (
-                                                                                null
-                                                                            )}
-                                                                        </p>
-                                                                        <div className={'task-footer gap-3'}>
-                                                                            <button onClick={(e) => {
-                                                                                e.stopPropagation();
-                                                                                handleDeleteTask(task.id);
-                                                                            }} className="delete-button">
-                                                                                <img src={Trash} alt={'Delete task'}
-                                                                                     className={'w-6'}/>
-                                                                            </button>
-                                                                            <button onClick={(e) => {
-                                                                                e.stopPropagation();
-                                                                                openUserModal(task.id);
-                                                                            }}>
-                                                                                <img src={adduser} alt={'Add user'}
-                                                                                     className={'w-6'}/>
-                                                                            </button>
-                                                                        </div>
+                                <div className={'task-container'}>
+                                    {activeProject && (
+                                        <>
+                                            {Object.entries(activeProject.tasks.reduce((tasksByStatus, task) => {
+                                                if (!tasksByStatus[task.statusName]) {
+                                                    tasksByStatus[task.statusName] = [];
+                                                }
+                                                tasksByStatus[task.statusName].push(task);
+                                                return tasksByStatus;
+                                            }, {})).map(([statusName, tasks]) => (
+                                                <div key={statusName} className={'task-column'}>
+                                                    <h1>{statusName}</h1>
+                                                    <div className={'tasks'}>
+                                                        {tasks
+                                                            .filter((task) => task.name !== null && task.description !== null)
+                                                            .map((task) => (
+                                                                <div
+                                                                    className={'task'}
+                                                                    key={task.id}
+                                                                    onClick={(e) => {
+                                                                        if (!e.target.classList.contains('delete-button')) {
+                                                                            openEditModal(task);
+                                                                        }
+                                                                    }}
+                                                                >
+                                                                    <h2>{task.name}</h2>
+                                                                    <p>{task.description}</p>
+                                                                    <p>
+                                                                        {assignedUsersByTask[task.id] && assignedUsersByTask[task.id].length > 0 ? (
+                                                                            <>
+                                                                                <p>Assigned users:</p>
+                                                                                <ul>
+                                                                                    {assignedUsersByTask[task.id].map((username) => (
+                                                                                        <li key={username}>{username}</li>
+                                                                                    ))}
+                                                                                </ul>
+                                                                            </>
+                                                                        ) : (
+                                                                            null
+                                                                        )}
+                                                                    </p>
+                                                                    <div className={'task-footer gap-3'}>
+                                                                        <button onClick={(e) => {
+                                                                            e.stopPropagation();
+                                                                            handleDeleteTask(task.id);
+                                                                        }} className="delete-button">
+                                                                            <img src={Trash} alt={'Delete task'}
+                                                                                 className={'w-6'}/>
+                                                                        </button>
+                                                                        <button onClick={(e) => {
+                                                                            e.stopPropagation();
+                                                                            openUserModal(task.id);
+                                                                        }}>
+                                                                            <img src={adduser} alt={'Add user'}
+                                                                                 className={'w-6'}/>
+                                                                        </button>
                                                                     </div>
-                                                                ))}
-                                                            <button onClick={() => openModal(statusName)} id={'add-button'}>
-                                                                <img src={addtask} alt={'Add task'} className={'w-6'}/>
-                                                            </button>
-                                                        </div>
-                                                        <div className={'status-edit-container'}>
-                                                            <button onClick={() => handleDeleteStatus(statusName)} id={'delete-button'}>
-                                                                <img src={deletetask} alt={'Edit status'} className={'w-6'}/>
-                                                            </button>
-                                                            <button onClick={() => openEditStatusModal(statusName)} id={'edit-button'}>
-                                                                <img src={EditButton} alt={'Delete status'} className={'w-6'}/>
-                                                            </button>
-                                                        </div>
+                                                                </div>
+                                                            ))}
+                                                        <button onClick={() => openModal(statusName)} id={'add-button'}>
+                                                            <img src={addtask} alt={'Add task'} className={'w-6'}/>
+                                                        </button>
                                                     </div>
-                                                ))}
-                                            </>
-                                        )}
-                                        <div className={'add-status'}>
-                                            <button onClick={openStatusModal} id={'add-button-big'}>
-                                                <img src={addtask} alt={'Add status'} className={'w-6'}/>
-                                            </button>
-                                        </div>
+                                                    <div className={'status-edit-container'}>
+                                                        <button onClick={() => handleDeleteStatus(statusName)}
+                                                                id={'delete-button'}>
+                                                            <img src={deletetask} alt={'Edit status'}
+                                                                 className={'w-6'}/>
+                                                        </button>
+                                                        <button onClick={() => openEditStatusModal(statusName)}
+                                                                id={'edit-button'}>
+                                                            <img src={EditButton} alt={'Delete status'}
+                                                                 className={'w-6'}/>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </>
+                                    )}
+                                    <div className={'add-status'}>
+                                        <button onClick={openStatusModal} id={'add-button-big'}>
+                                            <img src={addtask} alt={'Add status'} className={'w-6'}/>
+                                        </button>
                                     </div>
-                                </>
-                            )}
-                        </>
-                    )}
-                </div>
-                {isModalOpen && <Modal isOpen={isModalOpen} onClose={handleModalClose} onSubmit={handleModalSubmit}/>}
-                {showModal && <AddModal
-                    onClose={closeModal}
-                    onSubmit={handleNewTaskSubmit}
-                    statusList={Array.from(new Set(activeProject.tasks.map((task) => task.statusName)))}
-                    projectName={newTaskTitle}
-                    setProjectName={setNewTaskTitle}
-                    projectDescription={newTaskDescription}
-                    setProjectDescription={setNewTaskDescription}
-                    projectStatus={newTaskStatus}
-                    setProjectStatus={setNewTaskStatus}
-                />}
-                {showStatusModal && <AddStatusModal
-                    onClose={closeStatusModal}
-                    onSubmit={handleNewStatusSubmit}
-                    statusName={newStatus}
-                    setStatusName={setNewStatus}
-                />}
-                {showUserModal && (<UserModal
-                    onClose={closeUserModal}
-                    onSubmit={handleUserToTaskSubmit}
-                    usersList={assignedUsers}
-                    username={username}
-                    setUsername={setUsername}
-                    userId={userId}
-                    setUserId={setUserId}
-                    taskId={selectedTaskId}
-                />)}
-                {showProjectUsersModal && (<ProjectUsersModal
-                    onClose={closeProjectUsersModal}
-                    onSubmit={handleUsersSubmit}
-                    usersList={users}
-                    userId={userId}
-                    setUserId={setUserId}
-                    taskId={selectedTaskId}
-                />)}
-                {showEditModal && (
-                    <EditModal
-                        onClose={closeEditModal}
-                        onSubmit={handleEditTaskSubmit}
-                        task={selectedTask}
-                        setTask={setSelectedTask}
-                        statusList={Array.from(new Set(activeProject.tasks.map((task) => task.statusName)))}
-                    />
-                )}
-                {showEditStatusModal && (
-                    <EditStatusModal
-                        onClose={closeEditStatusModal}
-                        onSubmit={handleEditStatusSubmit}
-                        status={newStatusName}
-                        setNewStatus={setNewStatusName}
-                    />
-                )}
-                {showDeleteConfirmation && (
-                    <DeleteModal
-                        activeProject={activeProject}
-                        handleDeleteConfirmation={handleDeleteConfirmation}
-                        closeDeleteConfirmation={closeDeleteConfirmation}
-                    />
+                                </div>
+                            </>
+                        )}
+                    </>
                 )}
             </div>
+            {isModalOpen && <Modal isOpen={isModalOpen} onClose={handleModalClose} onSubmit={handleModalSubmit}/>}
+            {showModal && <AddModal
+                onClose={closeModal}
+                onSubmit={handleNewTaskSubmit}
+                statusList={Array.from(new Set(activeProject.tasks.map((task) => task.statusName)))}
+                projectName={newTaskTitle}
+                setProjectName={setNewTaskTitle}
+                projectDescription={newTaskDescription}
+                setProjectDescription={setNewTaskDescription}
+                projectStatus={newTaskStatus}
+                setProjectStatus={setNewTaskStatus}
+            />}
+            {showStatusModal && <AddStatusModal
+                onClose={closeStatusModal}
+                onSubmit={handleNewStatusSubmit}
+                statusName={newStatus}
+                setStatusName={setNewStatus}
+            />}
+            {showUserModal && (<UserModal
+                onClose={closeUserModal}
+                onSubmit={handleUserToTaskSubmit}
+                usersList={assignedUsers}
+                username={username}
+                setUsername={setUsername}
+                userId={userId}
+                setUserId={setUserId}
+                taskId={selectedTaskId}
+            />)}
+            {showProjectUsersModal && (<ProjectUsersModal
+                onClose={closeProjectUsersModal}
+                onSubmit={handleUsersSubmit}
+                usersList={users}
+                userId={userId}
+                setUserId={setUserId}
+                taskId={selectedTaskId}
+            />)}
+            {showEditModal && (
+                <EditModal
+                    onClose={closeEditModal}
+                    onSubmit={handleEditTaskSubmit}
+                    task={selectedTask}
+                    setTask={setSelectedTask}
+                    statusList={Array.from(new Set(activeProject.tasks.map((task) => task.statusName)))}
+                />
+            )}
+            {showEditStatusModal && (
+                <EditStatusModal
+                    onClose={closeEditStatusModal}
+                    onSubmit={handleEditStatusSubmit}
+                    status={newStatusName}
+                    setNewStatus={setNewStatusName}
+                />
+            )}
+            {showDeleteConfirmation && (
+                <DeleteModal
+                    activeProject={activeProject}
+                    handleDeleteConfirmation={handleDeleteConfirmation}
+                    closeDeleteConfirmation={closeDeleteConfirmation}
+                />
+            )}
         </div>
-    );
-};
+    </div>
+);
+}
+;
 
 export default Home;

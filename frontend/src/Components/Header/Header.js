@@ -44,8 +44,8 @@ function Header(props) {
                 <img src={profilelogo} alt={'profilelogo'} id={'profile-logo'} onClick={handleProfileClick}/>
                 <LinkContainer to={"/messages"}>
                     <div>
-                        <img src={messageIcon} alt={'usermessage'} id={'user-message'}/>
                         <p id={'user-mesasges-counter'}>2</p>
+                        <img src={messageIcon} alt={'usermessage'} id={'user-message'}/>
                     </div>
                 </LinkContainer>
                 <div className={''}>

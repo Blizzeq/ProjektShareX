@@ -22,3 +22,4 @@ function DeleteModal({ activeProject, handleDeleteConfirmation, closeDeleteConfi
 }
 
 export default DeleteModal;
+
