@@ -59,6 +59,7 @@ public class TaskController {
 
     @DeleteMapping("{taskId}")
     public ResponseEntity<?> deleteTask(@PathVariable Long taskId) {
+        taskService.deleteAssignedUsersToTasks(taskId);
         taskService.deleteTask(taskId);
 
         return ResponseEntity.ok().build();
@@ -101,6 +102,7 @@ public class TaskController {
 
     @DeleteMapping("deleteStatus/{projectId}/{statusName}")
     public ResponseEntity<?> deleteStatus(@PathVariable Long projectId, @PathVariable String statusName) {
+        taskService.deleteAssignedTasks(projectId, statusName);
         taskService.deleteTaskByStatusNameAndProject(projectId, statusName);
 
         return ResponseEntity.ok().build();

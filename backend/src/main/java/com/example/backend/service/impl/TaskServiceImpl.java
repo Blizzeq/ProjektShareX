@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -71,6 +72,23 @@ public class TaskServiceImpl implements TaskService {
         nativeQuery.setParameter("taskId", taskId);
 
         return nativeQuery.getResultList();
+    }
+
+    @Override
+    @Transactional
+    public void deleteAssignedTasks(Long projectId, String statusName) {
+        Query query = entityManager.createNativeQuery("DELETE FROM users_assign_tasks WHERE task_id IN (SELECT id FROM tasks WHERE project_id = :projectId AND status_name = :statusName)");
+        query.setParameter("projectId", projectId);
+        query.setParameter("statusName", statusName);
+        query.executeUpdate();
+    }
+
+    @Override
+    @Transactional
+    public void deleteAssignedUsersToTasks(Long taskId) {
+        Query query = entityManager.createNativeQuery("DELETE FROM users_assign_tasks WHERE task_id = :taskId");
+        query.setParameter("taskId", taskId);
+        query.executeUpdate();
     }
 
     @Override
