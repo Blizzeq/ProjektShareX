@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import logo from "../../Assets/Home/Logo.svg";
 import profilelogo from "../../Assets/Home/Profile-Icon.svg";
 import {LinkContainer} from "react-router-bootstrap";
@@ -7,10 +7,13 @@ import './Header.css';
 import {clearCurrentUser} from "../../store/actions/user";
 import {useNavigate} from "react-router-dom";
 import messageIcon from "../../Assets/Home/Envelope.svg"
+import ProjectService from "../../services/project.service";
+import NotificationService from "../../services/notification.service";
 
 function Header(props) {
 
     const currentUser = useSelector(state => state.user);
+    const [numberNotReadNotification, setNumberNotReadNotification] = useState(null)
 
     const [isMenuVisible, setMenuVisible] = useState(false);
 
@@ -25,6 +28,13 @@ function Header(props) {
         dispatch(clearCurrentUser());
         navigate('/');
     };
+
+    useEffect(() => {
+        NotificationService.findNumberNotReadNotification(currentUser.id).then((response) => {
+            console.log(response.data);
+            setNumberNotReadNotification(response.data);
+        });
+    }, []);
 
     return (
         <div className={'flex justify-between mx-6 h-20'}>
@@ -44,7 +54,9 @@ function Header(props) {
                 <img src={profilelogo} alt={'profilelogo'} id={'profile-logo'} onClick={handleProfileClick}/>
                 <LinkContainer to={"/messages"}>
                     <div>
-                        <p id={'user-mesasges-counter'}>2</p>
+                        {numberNotReadNotification !== 0 && (
+                            <p id={'user-mesasges-counter'}>{numberNotReadNotification}</p>
+                        )}
                         <img src={messageIcon} alt={'usermessage'} id={'user-message'}/>
                     </div>
                 </LinkContainer>
