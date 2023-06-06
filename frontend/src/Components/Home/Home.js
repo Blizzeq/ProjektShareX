@@ -36,6 +36,7 @@ import ProjectUsersModal from "../Modal/ProjectUsersModal";
 import EditStatusModal from "../Modal/EditStatusModal";
 import EditButton from "../../Assets/Home/EditButton.svg";
 import NotificationService from "../../services/notification.service";
+import deletetaskred from "../../Assets/Home/MinusCircleRed.svg";
 
 const Home = () => {
 
@@ -570,9 +571,9 @@ return (
                                                                                 <p>Assigned users:</p>
                                                                                 <ul>
                                                                                     {assignedUsersByTask[task.id].map((username) => (
-                                                                                        <li key={username}>
+                                                                                        <li key={username} id={'assigned-users-container'}>
                                                                                             {username}
-                                                                                            <button onClick={(e) => {e.stopPropagation(); handleDeleteAssignedUserToTask(username, task.id)}}><img src={deletetask} alt={'Delete user'} className={'w-6'}/></button>
+                                                                                            <button onClick={(e) => {e.stopPropagation(); handleDeleteAssignedUserToTask(username, task.id)}}><img src={deletetaskred} alt={'Delete user'} className={'w-6'}/></button>
                                                                                         </li>
                                                                                     ))}
                                                                                 </ul>

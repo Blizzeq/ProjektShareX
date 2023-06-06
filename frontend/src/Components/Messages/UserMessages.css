@@ -118,6 +118,10 @@
     justify-content: center;
     align-items: center;
     gap: 1vmax;
+    background-color: #5555de;
+    padding: 2vmax;
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
 
 }
 
@@ -126,7 +130,7 @@
     justify-content: center;
     align-items: center;
     padding-inline: 1vmax;
-    background-color: red;
+    background-color: green;
     color: white;
     border-radius: 10px;
     font-size: 1.125vmax;
@@ -134,7 +138,7 @@
 }
 
 .unread {
-    background-color: yellow;
+    background-color: red;
     font-weight: bold;
 }
 
