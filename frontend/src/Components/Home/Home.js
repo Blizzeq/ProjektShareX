@@ -37,6 +37,7 @@ import EditStatusModal from "../Modal/EditStatusModal";
 import EditButton from "../../Assets/Home/EditButton.svg";
 import NotificationService from "../../services/notification.service";
 import deletetaskred from "../../Assets/Home/MinusCircleRed.svg";
+import DeleteStatusModal from "../Modal/DeletaStatusModal";
 
 const Home = () => {
 
@@ -357,6 +358,18 @@ const Home = () => {
         };
 
 
+        const [showDeleteStatusConfirmation, setShowDeleteStatusConfirmation] = useState(false);
+        const [activeStatus, setActiveStatus] = useState(null);
+
+        const openDeleteStatusConfirmation = (statusName) => {
+            setActiveStatus(statusName);
+            setShowDeleteStatusConfirmation(true);
+        }
+
+        const closeDeleteStatusConfirmation = () => {
+            setActiveStatus(null);
+            setShowDeleteStatusConfirmation(false);
+        }
 
         const handleDeleteStatus = async (statusName) => {
             try {
@@ -364,9 +377,6 @@ const Home = () => {
 
                 console.log(projectId + '---' + statusName);
 
-                const confirmDelete = window.confirm('Czy na pewno chcesz usunąć ten status?');
-
-                if (confirmDelete) {
                     await TaskService.deleteStatus(projectId, statusName);
 
                     ProjectService.getProjectById(projectId)
@@ -376,10 +386,11 @@ const Home = () => {
                         .catch((error) => {
                             console.error('Error while fetching project details:', error);
                         });
-                }
             } catch (error) {
                 console.error('Error while deleting status:', error);
             }
+
+            closeDeleteStatusConfirmation();
         };
 
 
@@ -605,7 +616,7 @@ return (
                                                         </button>
                                                     </div>
                                                     <div className={'status-edit-container'}>
-                                                        <button onClick={() => handleDeleteStatus(statusName)}
+                                                        <button onClick={() => openDeleteStatusConfirmation(statusName)}
                                                                 id={'delete-button'}>
                                                             <img src={deletetask} alt={'Edit status'}
                                                                  className={'w-6'}/>
@@ -689,6 +700,13 @@ return (
                     activeProject={activeProject}
                     handleDeleteConfirmation={handleDeleteConfirmation}
                     closeDeleteConfirmation={closeDeleteConfirmation}
+                />
+            )}
+            {showDeleteStatusConfirmation && (
+                <DeleteStatusModal
+                    activeStatus={activeStatus}
+                    handleDeleteStatusConfirmation={handleDeleteStatus}
+                    closeDeleteStatusConfirmation={closeDeleteStatusConfirmation}
                 />
             )}
         </div>
