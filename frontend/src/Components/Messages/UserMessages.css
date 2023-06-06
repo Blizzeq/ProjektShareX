@@ -133,6 +133,10 @@
     font-family: "InterRegular", sans-serif;
 }
 
+.unread {
+    background-color: yellow;
+    font-weight: bold;
+}
 
 @media (max-width: 1920px) {
     html {
