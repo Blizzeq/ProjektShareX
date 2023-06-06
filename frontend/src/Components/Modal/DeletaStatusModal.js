@@ -6,7 +6,7 @@ function DeleteStatusModal({ activeStatus, handleDeleteStatusConfirmation, close
             <div className="bg-white p-8 rounded">
                 <h2 className="text-xl font-bold mb-4">Delete Status</h2>
                 <div className="flex flex-col delete-confirmation-content gap-5">
-                    <h3>Are you sure you want to delete this status?</h3>
+                    <h3>Are you sure you want to delete this status? <br/>It will result in the deletion of all tasks assigned to this status.</h3>
                     <div className="delete-confirmation-buttons">
                         <button onClick={() => handleDeleteStatusConfirmation(activeStatus)} className="text-white bg-red-600 rounded px-4 py-2">
                             Delete Status
