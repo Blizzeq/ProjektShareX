@@ -31,6 +31,9 @@ public interface TaskService {
     void deleteAssignedTasks(Long projectId, String statusName);
 
     @Transactional
+    void deleteAssignedUserToTask(String username, Long taskId);
+
+    @Transactional
     void deleteAssignedUsersToTasks(Long taskId);
 
     Task saveTask(Task task);

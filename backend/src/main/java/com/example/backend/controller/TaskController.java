@@ -108,6 +108,13 @@ public class TaskController {
         return ResponseEntity.ok().build();
     }
 
+    @DeleteMapping("deleteAssignedUser/{username}/{taskId}")
+    public ResponseEntity<?> deleteAssignedUserToTask(@PathVariable String username, @PathVariable Long taskId) {
+        taskService.deleteAssignedUserToTask(username, taskId);
+
+        return ResponseEntity.ok().build();
+    }
+
     @PutMapping("updateStatus/{projectId}/{oldStatusName}/{newStatusName}")
     public ResponseEntity<?> updateStatus(@PathVariable Long projectId, @PathVariable String oldStatusName, @PathVariable String newStatusName) {
         taskService.setStatusNameByProjectAndStatusName(projectId, oldStatusName, newStatusName);

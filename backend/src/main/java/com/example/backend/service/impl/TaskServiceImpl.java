@@ -85,6 +85,15 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
+    public void deleteAssignedUserToTask(String username, Long taskId) {
+        Query query = entityManager.createNativeQuery("DELETE FROM users_assign_tasks WHERE user_id IN (SELECT id FROM users WHERE username = :username) AND task_id = :taskId");
+        query.setParameter("taskId", taskId);
+        query.setParameter("username", username);
+        query.executeUpdate();
+    }
+
+    @Override
+    @Transactional
     public void deleteAssignedUsersToTasks(Long taskId) {
         Query query = entityManager.createNativeQuery("DELETE FROM users_assign_tasks WHERE task_id = :taskId");
         query.setParameter("taskId", taskId);
