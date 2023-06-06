@@ -112,6 +112,32 @@
     margin-top: 5%;
 }
 
+.table {
+    border-collapse: collapse;
+    font-weight: bold;
+}
+
+.table th,
+.table td {
+    border: 1px solid black;
+    padding: 8px;
+}
+
+.table tr.new td {
+    text-decoration: underline;
+    text-decoration-color: red;
+}
+
+.checkbox-cell {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.notify {
+    font-size: 30px;
+    font-weight: bold;
+}
+
 .messages{
     display: flex;
     flex-direction: column;
