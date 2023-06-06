@@ -16,8 +16,8 @@ class NotificationService {
         return axios.get(API_URL + '/count/' + userId, {headers: authHeader()})
     }
 
-    changeIsReadToTrue(userId) {
-        return axios.put(API_URL + '/changeIsRead/' + userId, {}, {headers: authHeader()})
+    changeIsReadToTrue(notificationId) {
+        return axios.put(API_URL + '/changeIsRead/' + notificationId, {}, {headers: authHeader()})
     }
 }
 
