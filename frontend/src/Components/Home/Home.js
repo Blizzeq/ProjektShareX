@@ -339,6 +339,22 @@ const Home = () => {
         }
     };
 
+        const handleDeleteAssignedUserToTask = async (username, taskId) => {
+            try {
+                console.log(username + ' ' + taskId);
+                await TaskService.deleteAssignedUserToTask(username, taskId);
+                ProjectService.getProjectById(activeProject.id)
+                    .then((response) => {
+                        setActiveProject(response.data);
+                    })
+                    .catch((error) => {
+                        console.error('Error while fetching project details:', error);
+                    });
+            } catch (error) {
+                console.error('Error while deleting assigned user to task:', error);
+            }
+        };
+
 
 
         const handleDeleteStatus = async (statusName) => {
@@ -554,7 +570,10 @@ return (
                                                                                 <p>Assigned users:</p>
                                                                                 <ul>
                                                                                     {assignedUsersByTask[task.id].map((username) => (
-                                                                                        <li key={username}>{username}</li>
+                                                                                        <li key={username}>
+                                                                                            {username}
+                                                                                            <button onClick={(e) => {e.stopPropagation(); handleDeleteAssignedUserToTask(username, task.id)}}><img src={deletetask} alt={'Delete user'} className={'w-6'}/></button>
+                                                                                        </li>
                                                                                     ))}
                                                                                 </ul>
                                                                             </>
