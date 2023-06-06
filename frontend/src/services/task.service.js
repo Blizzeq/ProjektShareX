@@ -37,6 +37,10 @@ class TaskService {
         return axios.get(API_URL + '/byProjectTasks/' + projectId, {headers: authHeader()})
     }
 
+    deleteAssignedUserToTask(username, taskId) {
+        return axios.delete(API_URL + '/deleteAssignedUser/' + username + '/' + taskId, {headers: authHeader()})
+    }
+
     updateStatusOfTask(taskId, newStatusName) {
         return axios.put(API_URL + 'updateStatusByTaskId/' + taskId + '/' + newStatusName, {}, {headers: authHeader()})
     }
