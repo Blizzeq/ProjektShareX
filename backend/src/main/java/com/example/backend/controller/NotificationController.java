@@ -34,9 +34,9 @@ public class NotificationController {
         return ResponseEntity.ok(notificationService.countNotReadNotification(userId));
     }
 
-    @PutMapping("changeIsRead/{userId}")
-    public ResponseEntity<?> changeIsReadToTrue(@PathVariable Long userId) {
-        notificationService.changeIsRead(userId);
+    @PutMapping("changeIsRead/{notificationId}")
+    public ResponseEntity<?> changeIsReadToTrue(@PathVariable Long notificationId) {
+        notificationService.changeIsRead(notificationId);
 
         return ResponseEntity.ok().build();
     }

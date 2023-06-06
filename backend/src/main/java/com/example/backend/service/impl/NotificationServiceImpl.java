@@ -36,8 +36,8 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public void changeIsRead(Long userId) {
-        notificationRepository.setIsRead(userId);
+    public void changeIsRead(Long notificationId) {
+        notificationRepository.setIsRead(notificationId);
     }
 
 }
