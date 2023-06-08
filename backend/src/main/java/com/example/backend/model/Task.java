@@ -49,4 +49,8 @@ public class Task {
     @JsonIgnore
     @ManyToMany(mappedBy = "assignedTasks")
     private Set<User> assignedUsers = new HashSet<>();
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "assignedTasksFile")
+    private Set<FileData> assignedFiles = new HashSet<>();
 }
