@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface FileService {
-    String uploadFile(MultipartFile file) throws IOException;
+    String uploadFile(MultipartFile file, Long taskId) throws IOException;
 
     byte[] downloadFile(String fileName);
 

@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.Optional;
 
 @RestController
@@ -35,9 +36,9 @@ public class FileController {
         this.taskService = taskService;
     }
 
-    @PostMapping
-    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
-        String uploadFile = fileService.uploadFile(file);
+    @PostMapping("/add/{taskId}")
+    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @PathVariable("taskId") Long taskId) throws IOException {
+        String uploadFile = fileService.uploadFile(file, taskId);
 
         return ResponseEntity.status(HttpStatus.OK).body(uploadFile);
     }
@@ -66,6 +67,7 @@ public class FileController {
 
             Task task = taskOptional.get();
             FileData fileData = fileDataOptional.get();
+
             task.getAssignedFiles().add(fileData);
             fileData.getAssignedTasksFile().add(task);
 
