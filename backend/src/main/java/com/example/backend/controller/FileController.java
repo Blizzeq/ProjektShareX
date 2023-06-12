@@ -47,8 +47,13 @@ public class FileController {
     public ResponseEntity<?> downloadFile(@PathVariable String fileName) throws IOException {
         byte[] fileData = fileService.downloadFile(fileName);
 
-        Path filePath = Paths.get(fileName);
-        String contentType = Files.probeContentType(filePath);
+        Optional<FileData> fileDataOptional = fileRepository.findByName(fileName);
+        FileData fileData2 = fileDataOptional.get();
+
+        String contentType = fileData2.getType();
+
+        System.out.println("CONTENT TYPE");
+        System.out.println(contentType);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.parseMediaType(contentType))
@@ -82,6 +87,13 @@ public class FileController {
     @GetMapping("assignedToTask/{taskId}")
     public ResponseEntity<?> getFilesListAssignedToTask(@PathVariable Long taskId) {
         return ResponseEntity.ok(fileService.findFilesAssignedToTask(taskId));
+    }
+
+    @DeleteMapping("deleteAssignedFile/{fileId}")
+    public ResponseEntity<?> deleteAssignedFileToTask(@PathVariable Long fileId) {
+        fileService.deleteAssignedFileToTask(fileId);
+
+        return ResponseEntity.ok().build();
     }
 
 }

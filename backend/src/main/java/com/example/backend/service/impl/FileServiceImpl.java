@@ -2,19 +2,16 @@ package com.example.backend.service.impl;
 
 import com.example.backend.model.FileData;
 import com.example.backend.model.Task;
-import com.example.backend.model.User;
 import com.example.backend.repository.FileRepository;
 import com.example.backend.repository.TaskRepository;
 import com.example.backend.service.FileService;
-import com.example.backend.service.TaskService;
 import com.example.backend.utils.FileUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
@@ -71,7 +68,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public List<User> findFilesAssignedToTask(Long taskId) {
+    public List<FileData> findFilesAssignedToTask(Long taskId) {
         String query = "SELECT * FROM files WHERE id IN " +
                 "(SELECT file_id FROM files_assign_task WHERE task_id = :taskId)";
 
@@ -79,6 +76,22 @@ public class FileServiceImpl implements FileService {
         nativeQuery.setParameter("taskId", taskId);
 
         return nativeQuery.getResultList();
+    }
+
+    @Override
+    @Transactional
+    public void deleteAssignedFileToTask(Long fileId) {
+        Query query = entityManager.createNativeQuery("DELETE FROM files_assign_task WHERE file_id = :fileId");
+        query.setParameter("fileId", fileId);
+        query.executeUpdate();
+    }
+
+    @Override
+    @Transactional
+    public void deleteAllAssignedFilesToTask(Long task_id) {
+        Query query = entityManager.createNativeQuery("DELETE FROM files_assign_task WHERE task_id = :task_id");
+        query.setParameter("task_id", task_id);
+        query.executeUpdate();
     }
 
 }
