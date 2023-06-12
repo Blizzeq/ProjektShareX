@@ -4,11 +4,13 @@ import {authHeader} from "./base.service";
 const API_URL = 'http://localhost:8080/api/file';
 
 class FileService {
-    uploadFile(file, taskId) {
-        const formData = new FormData();
-        formData.append('file', file);
-
-        return axios.post(API_URL + '/add/' + taskId, formData, {headers: authHeader()})
+    uploadFile(formData, taskId) {
+        return axios.post(API_URL + '/add/' + taskId, formData, {
+            headers: {
+                ...authHeader(),
+                'Content-Type': 'multipart/form-data',
+            },
+        });
     }
 
     downloadFile(fileName) {
@@ -16,7 +18,11 @@ class FileService {
     }
 
     getFilesListAssignedToTask(taskId) {
-        return axios.get(API_URL + 'assignedToTask/' + taskId, {headers: authHeader()})
+        return axios.get(API_URL + '/assignedToTask/' + taskId, {headers: authHeader()})
+    }
+
+    deleteAssignedFileToTask(fileId) {
+        return axios.delete(API_URL + '/deleteAssignedFile/' + fileId, {headers: authHeader()})
     }
 }
 
