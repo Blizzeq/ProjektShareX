@@ -70,5 +70,9 @@ public class ProjectServiceImpl implements ProjectService {
         Query query = entityManager.createNativeQuery("DELETE FROM users_assign_tasks WHERE task_id IN (SELECT id from tasks WHERE project_id = :projectId)");
         query.setParameter("projectId", projectId);
         query.executeUpdate();
+
+        Query query2 = entityManager.createNativeQuery("DELETE FROM files_assign_task WHERE task_id IN (SELECT id FROM tasks WHERE project_id = :projectId)");
+        query2.setParameter("projectId", projectId);
+        query2.executeUpdate();
     }
 }
