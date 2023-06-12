@@ -88,7 +88,7 @@ const Home = () => {
                             <p className={'px-2 py-2'}>Old Password</p>
                         </div>
                         <div className={'text-base w-9/12'}>
-                            <input type="password" disabled name="password" placeholder={'Old Password'} className={'input-profile px-2 py-2 w-full'} value={''} onChange={(e) => onInputChange(e)}/>
+                            <input type="password" name="password" placeholder={'**********'} className={'input-profile px-2 py-2 w-full'} value={''} onChange={(e) => onInputChange(e)}/>
                         </div>
                     </div>
                     <hr></hr>
@@ -97,7 +97,7 @@ const Home = () => {
                             <p className={'px-2 py-2'}>New Password</p>
                         </div>
                         <div className={'text-base w-9/12'}>
-                            <input type="password" disabled name="password" placeholder={'New Password'} className={'input-profile px-2 py-2 w-full'} value={''} onChange={(e) => onInputChange(e)}/>
+                            <input type="password" name="password" placeholder={'**********'} className={'input-profile px-2 py-2 w-full'} value={''} onChange={(e) => onInputChange(e)}/>
                         </div>
                     </div>
                     <hr></hr>
