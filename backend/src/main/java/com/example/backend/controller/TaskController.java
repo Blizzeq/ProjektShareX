@@ -22,15 +22,18 @@ public class TaskController {
 
     private final UserService userService;
 
+    private final FileService fileService;
+
     private final ProjectService projectService;
 
     @Autowired
     private TaskRepository taskRepository;
 
-    public TaskController(TaskService taskService, UserService userService, ProjectService projectService) {
+    public TaskController(TaskService taskService, UserService userService, ProjectService projectService, FileService fileService) {
         this.taskService = taskService;
         this.userService = userService;
         this.projectService = projectService;
+        this.fileService = fileService;
     }
 
     @GetMapping("byProjectAndStatus/{projectId}/{statusName}")
@@ -59,6 +62,7 @@ public class TaskController {
 
     @DeleteMapping("{taskId}")
     public ResponseEntity<?> deleteTask(@PathVariable Long taskId) {
+        fileService.deleteAllAssignedFilesToTask(taskId);
         taskService.deleteAssignedUsersToTasks(taskId);
         taskService.deleteTask(taskId);
 

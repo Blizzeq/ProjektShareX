@@ -81,6 +81,11 @@ public class TaskServiceImpl implements TaskService {
         query.setParameter("projectId", projectId);
         query.setParameter("statusName", statusName);
         query.executeUpdate();
+
+        Query query2 = entityManager.createNativeQuery("DELETE FROM files_assign_task WHERE task_id IN (SELECT id FROM tasks WHERE project_id = :projectId AND status_name = :statusName)");
+        query2.setParameter("projectId", projectId);
+        query2.setParameter("statusName", statusName);
+        query2.executeUpdate();
     }
 
     @Override
