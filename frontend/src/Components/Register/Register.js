@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './Register.css';
 import logo from "../../Assets/Login/Icon1.svg";
 import google from "../../Assets/Login/Gmail.svg";
@@ -11,33 +11,50 @@ import {LinkContainer} from "react-router-bootstrap";
 import Typewriter from "typewriter-effect";
 import {useFormik} from "formik";
 import {registerSchema} from "../FormValidation/FormValidation";
+import axios from "axios";
+import {useNavigate} from "react-router-dom";
+
 
 const Register = () => {
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const navigate = useNavigate();
 
     const formik = useFormik({
         initialValues: {
             firstName: '',
             lastName: '',
             email: '',
-            phoneNo: '',
+            username: '',
             password: '',
             confirmPassword: '',
             agreeToTerms: false,
         },
         validationSchema: registerSchema,
         onSubmit: values => {
-            console.log(values)
+            axios.post('http://localhost:8080/api/authentication/sign-up', values)
+                .then(res => {
+                    console.log(res.data);
+                    navigate("/", {replace: true});
+                })
+                .catch(err => {
+                    if (err?.response?.status === 409) {
+                        setErrorMessage('Username or email is not valid.');
+                    } else {
+                        setErrorMessage('Unexpected error occurred.');
+                    }
+                })
         },
     });
 
     return (
         <div className={'register Regular'}>
-            <div className={'flex justify-center items-center h-screen w-full'}>
-                <div className={'w-max text-5xl text-shadow text-white z-10'}>
+            <div className={'flex justify-center items-center h-screen w-full left-n'}>
+                <div className={'w-max text-5xl text-shadow text-white z-10 left-n'}>
                     <p>Share your
                         <Typewriter
                             options={{
-                                strings: ['projects', 'files', 'photos', 'videos', 'music', 'links', 'notes', 'ideas', 'thoughts', 'stories'],
+                                strings: ['projects','ideas', 'tasks'],
                                 autoStart: true,
                                 loop: true,
                             }}
@@ -100,17 +117,17 @@ const Register = () => {
                                 ) : null}
                             </div>
                             <div>
-                                <p className={'text-gray2 mb-2'}>Phone No.</p>
+                                <p className={'text-gray2 mb-2'}>Username</p>
                                 <input
-                                    type="number"
+                                    type="text"
                                     className={'border border-blue rounded h-8 px-2 w-full'}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
-                                    value={formik.values.phoneNo || ''}
-                                    name="phoneNo"
+                                    value={formik.values.username}
+                                    name="username"
                                 />
-                                {formik.touched.phoneNo && formik.errors.phoneNo ? (
-                                    <div className="error">{formik.errors.phoneNo}</div>
+                                {formik.touched.username && formik.errors.username ? (
+                                    <div className="error">{formik.errors.username}</div>
                                 ) : null}
                             </div>
                         </div>
@@ -161,6 +178,7 @@ const Register = () => {
                         <div className={'flex justify-center mb-6'}>
                             <button type={'submit'} className={'bg-blue text-white rounded h-10 w-4/12'}>Sign Up</button>
                         </div>
+                        {errorMessage && <div className="error flex justify-center mb-2 -mt-3">{errorMessage}</div>}
                     </form>
                     <p className={'flex justify-center mb-4'}>or sign up with other accounts?</p>
                     <div className={'flex justify-center mb-4 gap-2'}>
@@ -193,10 +211,10 @@ const Register = () => {
                     </div>
                 </div>
             </div>
-            <div>
+            <div className={'left-n'}>
                 <img src={graphic} alt={'graphic'} className={'absolute h-screen w-1/2 object-cover top-0'}/>
             </div>
-            <div>
+            <div className={'left-n'}>
                 <img src={logo2} alt={'logo'} className={'absolute -top-20 right-0'}/>
             </div>
         </div>

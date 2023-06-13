@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './Login.css';
 import bg from '../../Assets/Login/Graphic Side.svg';
 import logo from '../../Assets/Login/Icon1.svg';
@@ -10,20 +10,39 @@ import logo2 from '../../Assets/Login/Icon.svg';
 import {LinkContainer} from 'react-router-bootstrap'
 import Typewriter from 'typewriter-effect';
 import {loginSchema} from "../FormValidation/FormValidation";
-import {useFormik} from "formik";
+import {replace, useFormik} from "formik";
+import axios from "axios";
+import {useNavigate} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {setCurrentUser} from "../../store/actions/user";
 
 
 
 const Login = () => {
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const currentUser = useSelector(state => state.user);
+
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const formik = useFormik({
         initialValues: {
-            email: '',
+            username: '',
             password: ''
         },
         validationSchema: loginSchema,
         onSubmit: values => {
-            console.log(values)
+            axios.post('http://localhost:8080/api/authentication/sign-in', values)
+                .then(response => {
+                    console.log(response.data);
+                    dispatch(setCurrentUser(response.data));
+                    navigate("/home");
+                })
+                .catch(err => {
+                    console.log(err);
+                    setErrorMessage('Username or password is not valid.');
+                })
         },
     });
 
@@ -38,17 +57,17 @@ const Login = () => {
                     <p className={'SemiBold text-3xl flex justify-center mb-4'}>Sign In</p>
                     <p className={'text-gray flex justify-center mb-4'}>Sign in to stay connected.</p>
                     <form onSubmit={formik.handleSubmit}>
-                        <p className={'text-gray2 mb-2'}>Email</p>
+                        <p className={'text-gray2 mb-2'}>Username</p>
                         <input
                             type="text"
                             className={'border border-blue rounded h-8 px-2 w-full'}
-                            name="email"
+                            name="username"
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            value={formik.values.email}
+                            value={formik.values.username}
                         />
-                        {formik.touched.email && formik.errors.email ? (
-                            <div className="error">{formik.errors.email}</div>
+                        {formik.touched.username && formik.errors.username ? (
+                            <div className="error">{formik.errors.username}</div>
                         ) : null}
                         <p className={'text-gray2 mb-2 mt-4'}>Password</p>
                         <input
@@ -70,6 +89,9 @@ const Login = () => {
                         <LinkContainer to={'/reset'}>
                             <a className={'text-blue'}>Forgot Password</a>
                         </LinkContainer>
+                    </div>
+                    <div className={'mb-3 -mt-3'}>
+                        {errorMessage && <div className="error">{errorMessage}</div>}
                     </div>
                     <div className={'flex justify-center mb-4'}>
                             <button type={'submit'} className={'bg-blue text-white rounded h-10 w-4/12'}>Sign In</button>
@@ -106,12 +128,12 @@ const Login = () => {
                     </div>
                 </div>
             </div>
-            <div className={'flex justify-center items-center h-screen w-full'}>
+            <div className={'flex justify-center items-center h-screen w-full right'}>
                 <div className={'w-max text-5xl text-shadow text-white z-10'}>
                     <p>Share your
                         <Typewriter
                             options={{
-                                strings: ['projects', 'files', 'photos', 'videos', 'music', 'links', 'notes', 'ideas', 'thoughts', 'stories'],
+                                strings: ['projects','ideas', 'tasks'],
                                 autoStart: true,
                                 loop: true,
                             }}
@@ -120,10 +142,10 @@ const Login = () => {
                 </div>
             </div>
             <div>
-                <img src={bg} alt={'bg'} className={'absolute top-0 left-1/2 h-screen w-1/2 object-cover'}/>
+                <img src={bg} alt={'bg'} className={'absolute top-0 left-1/2 h-screen w-1/2 object-cover right'}/>
             </div>
             <div>
-                <img src={logo2} alt={'logo'} className={'absolute -top-10 -left-10'}/>
+                <img src={logo2} alt={'logo'} className={'absolute -top-10 -left-10 right'}/>
             </div>
         </div>
     );

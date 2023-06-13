@@ -57,6 +57,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     height: 100vh;
+    width: 100vw;
 }
 
 .logo-sm{
@@ -65,14 +66,50 @@
 }
 
 .Typewriter {
-    /* center the text */
     display: inline-block;
     line-height: normal;
-    padding-left: 15px;
+    padding-left: .8rem;
 }
 
 .error {
     color: red;
-    font-size: 12px;
-    margin-top: 4px;
+    font-size: 0.75rem;
+    margin-top: .3em;
 }
+
+@media (max-width: 1024px) {
+    html {
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 768px) {
+    html {
+        font-size: 8px;
+    }
+}
+
+@media (max-width: 509px) {
+    html {
+        font-size: 11px;
+    }
+
+    .login{
+        grid-template-columns: 1fr;
+    }
+
+    .right{
+        display: none;
+    }
+}
+
+@media (max-width: 330px) {
+    html {
+        font-size: 9px;
+    }
+
+    .right{
+        display: none;
+    }
+}
+

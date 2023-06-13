@@ -63,3 +63,47 @@
     grid-template-columns: 1fr 1fr;
     height: 100vh;
 }
+
+@media (max-width: 1024px) {
+    html {
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 768px) {
+    html {
+        font-size: 8px;
+    }
+}
+
+@media (max-width: 600px) {
+    html {
+        font-size: 11px;
+    }
+
+    .register{
+        grid-template-columns: 1fr;
+    }
+
+    .left-n{
+        display: none;
+        position: absolute;
+    }
+
+}
+
+@media (max-width: 411px) {
+    html {
+        font-size: 10px;
+    }
+}
+
+@media (max-width: 370px) {
+    html {
+        font-size: 9px;
+    }
+
+    .left-n{
+        display: none;
+    }
+}

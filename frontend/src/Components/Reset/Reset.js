@@ -3,7 +3,6 @@ import './Reset.css';
 import bg from '../../Assets/Reset/Graphic Side.svg';
 import logo from '../../Assets/Reset/Logo.svg';
 import frame from '../../Assets/Reset/Frame 453.svg';
-import {LinkContainer} from "react-router-bootstrap";
 import Typewriter from "typewriter-effect";
 import {resetPasswordSchema} from "../FormValidation/FormValidation";
 import {useFormik} from "formik";
@@ -52,12 +51,12 @@ const Reset = () => {
                     </form>
                 </div>
             </div>
-            <div className={'flex justify-center items-center h-screen w-full'}>
-                <div className={'w-max text-5xl text-shadow text-white z-10'}>
+            <div className={'flex justify-center items-center h-screen w-full right'}>
+                <div className={'w-max text-5xl text-shadow text-white z-10 right'}>
                     <p>Share your
                         <Typewriter
                             options={{
-                                strings: ['projects', 'files', 'photos', 'videos', 'music', 'links', 'notes', 'ideas', 'thoughts', 'stories'],
+                                strings: ['projects','ideas', 'tasks'],
                                 autoStart: true,
                                 loop: true,
                             }}
@@ -66,10 +65,10 @@ const Reset = () => {
                 </div>
             </div>
             <div>
-                <img src={bg} alt={'bg'} className={'absolute top-0 left-1/2 h-screen w-1/2 object-cover'}/>
+                <img src={bg} alt={'bg'} className={'absolute top-0 left-1/2 h-screen w-1/2 object-cover right'}/>
             </div>
             <div>
-                <img src={logo} alt={'logo'} className={'absolute -top-10 -left-10'}/>
+                <img src={logo} alt={'logo'} className={'absolute -top-10 -left-10 right'}/>
             </div>
         </div>
     );
